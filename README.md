@@ -1,11 +1,11 @@
-# pgsnap
+# pgbloom
 
-A lightweight PostgreSQL-backed **Cache**, **Pub/Sub**, and **Queue** library for Node.js.
+A lightweight PostgreSQL-backed **Cache**, **Pub/Sub**, and **Queue** library for Node.js with built-in Bloom Filter optimization.
 
 ## Installation
 
 ```bash
-npm install pgsnap
+npm install pgbloom
 ```
 
 Requires Node.js 14+ and a PostgreSQL database.
@@ -15,43 +15,43 @@ Requires Node.js 14+ and a PostgreSQL database.
 ## Quick Start
 
 ```typescript
-import PGSnap from "pgsnap";
+import pgbloom from "pgbloom";
 
-const pgsnap = await PGSnap(process.env.DATABASE_URL!);
+const client = await pgbloom(process.env.DATABASE_URL!);
 
 // Cache
-await pgsnap.setCache("user:123", { name: "Manoj", role: "admin" }, 3600000);
-const user = await pgsnap.getCache("user:123");
+await client.setCache("user:123", { name: "Manoj", role: "admin" }, 3600000);
+const user = await client.getCache("user:123");
 
 // Pub/Sub
-await pgsnap.publish("notifications", { type: "welcome", userId: 123 });
-await pgsnap.subscribe("notifications", (channel, payload) => {
+await client.publish("notifications", { type: "welcome", userId: 123 });
+await client.subscribe("notifications", (channel, payload) => {
   console.log("Received:", payload);
 });
 
 // Queue
-await pgsnap.enqueue("email-queue", { to: "user@example.com", subject: "Hello" });
-const job = await pgsnap.dequeue("email-queue");
+await client.enqueue("email-queue", { to: "user@example.com", subject: "Hello" });
+const job = await client.dequeue("email-queue");
 if (job) {
   await sendEmail(job.payload);
-  await pgsnap.completeJob(job.id);
+  await client.completeJob(job.id);
 }
 
-await pgsnap.close();
+await client.close();
 ```
 
 ---
 
 ## Bloom Filter
 
-PGSnap includes a production-quality **Bloom Filter** implementation with two distinct use cases:
+pgbloom includes a production-quality **Bloom Filter** implementation with two distinct use cases:
 
 ### 1. Internal Bloom Filter (Cache Optimization)
 
 Enable an internal Bloom Filter to accelerate `getCache()` calls for keys that definitely don't exist:
 
 ```typescript
-const pgsnap = await PGSnap(DATABASE_URL, {
+const client = await pgbloom(DATABASE_URL, {
   bloomFilter: true,
   bloom: {
     expectedItems: 100000,      // expected cache entries
@@ -61,7 +61,7 @@ const pgsnap = await PGSnap(DATABASE_URL, {
 });
 
 // Internally: checks Bloom Filter first, skips PostgreSQL for definite misses
-const user = await pgsnap.getCache("user:999"); // Returns null without querying DB if key not in filter
+const user = await client.getCache("user:999"); // Returns null without querying DB if key not in filter
 ```
 
 **How it works:**
@@ -105,7 +105,7 @@ interface BloomOptions {
 Create independent Bloom Filters for your own use cases:
 
 ```typescript
-const bloom = pgsnap.bloom({
+const bloom = client.bloom({
   expectedItems: 100000,
   falsePositiveRate: 0.01
 });
@@ -136,7 +136,7 @@ type BloomFilterValue = string | number | boolean | bigint | null;
 
 **Key points:**
 - The public Bloom Filter is **completely independent** from the internal cache Bloom Filter
-- `pgsnap.bloom()` creates a new, separate instance
+- `client.bloom()` creates a new, separate instance
 - Supports serialization via `toJSON()` / `fromJSON()`
 
 ---
@@ -145,19 +145,19 @@ type BloomFilterValue = string | number | boolean | bigint | null;
 
 ```typescript
 // Store a value (objects auto-serialized to JSON)
-await pgsnap.setCache(key: string, value: unknown, expiry?: number | Date): Promise<unknown>;
+await client.setCache(key: string, value: unknown, expiry?: number | Date): Promise<unknown>;
 
 // Retrieve a value (null if missing or expired)
-await pgsnap.getCache<T>(key: string): Promise<T | null>;
+await client.getCache<T>(key: string): Promise<T | null>;
 
 // Delete a key
-await pgsnap.deleteCache(key: string): Promise<void>;
+await client.deleteCache(key: string): Promise<void>;
 
 // Clear all entries
-await pgsnap.clearCache(): Promise<void>;
+await client.clearCache(): Promise<void>;
 
 // Clear only expired entries
-await pgsnap.clearExpiredCache(): Promise<number>;
+await client.clearExpiredCache(): Promise<number>;
 ```
 
 **Supported value types:** strings, numbers, booleans, `null`, objects, arrays.
@@ -170,10 +170,10 @@ await pgsnap.clearExpiredCache(): Promise<number>;
 
 ```typescript
 // Publish to a channel
-await pgsnap.publish(channel: string, payload: unknown): Promise<void>;
+await client.publish(channel: string, payload: unknown): Promise<void>;
 
 // Subscribe to a channel
-const unsubscribe = await pgsnap.subscribe(channel: string, handler: (channel, payload) => void): Promise<() => void>;
+const unsubscribe = await client.subscribe(channel: string, handler: (channel, payload) => void): Promise<() => void>;
 ```
 
 Uses PostgreSQL `LISTEN`/`NOTIFY` — no polling, minimal latency.
@@ -184,26 +184,26 @@ Uses PostgreSQL `LISTEN`/`NOTIFY` — no polling, minimal latency.
 
 ```typescript
 // Enqueue a job
-const job = await pgsnap.enqueue<T>(queueName: string, payload: T, options?: {
+const job = await client.enqueue<T>(queueName: string, payload: T, options?: {
   priority?: number;         // higher = processed first (default: 0)
   maxAttempts?: number;      // default: 3
   visibilityTimeout?: number // ms before re-queue on failure (default: 30000)
 }): Promise<QueueJob<T>>;
 
 // Dequeue next available job (uses FOR UPDATE SKIP LOCKED)
-const job = await pgsnap.dequeue<T>(queueName: string): Promise<QueueJob<T> | null>;
+const job = await client.dequeue<T>(queueName: string): Promise<QueueJob<T> | null>;
 
 // Mark job complete
-await pgsnap.completeJob(jobId: number): Promise<void>;
+await client.completeJob(jobId: number): Promise<void>;
 
 // Mark job failed (auto-retries if attempts remain)
-await pgsnap.failJob(jobId: number, error: string): Promise<void>;
+await client.failJob(jobId: number, error: string): Promise<void>;
 
 // Get queue statistics
-const stats = await pgsnap.getQueueStats(queueName: string);
+const stats = await client.getQueueStats(queueName: string);
 
 // Cleanup old completed/failed jobs
-await pgsnap.cleanupJobs(queueName: string, olderThan?: Date): Promise<number>;
+await client.cleanupJobs(queueName: string, olderThan?: Date): Promise<number>;
 ```
 
 ---
@@ -211,7 +211,7 @@ await pgsnap.cleanupJobs(queueName: string, olderThan?: Date): Promise<number>;
 ## Configuration
 
 ```typescript
-interface PGSnapOptions {
+interface PgbloomOptions {
   // Cache
   cleanupInterval?: number | false;     // default: 5 minutes; false = disable
   bloomFilter?: boolean;                // default: false
@@ -241,10 +241,10 @@ Both ESM and CommonJS are supported:
 
 ```typescript
 // ESM
-import PGSnap, { BloomFilter } from "pgsnap";
+import pgbloom, { BloomFilter } from "pgbloom";
 
 // CommonJS
-const { default: PGSnap, BloomFilter } = require("pgsnap");
+const { default: pgbloom, BloomFilter } = require("pgbloom");
 ```
 
 ---
@@ -260,4 +260,4 @@ const { default: PGSnap, BloomFilter } = require("pgsnap");
 
 ## License
 
-MIT# pgsnap
+MIT

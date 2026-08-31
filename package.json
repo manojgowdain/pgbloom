@@ -1,6 +1,6 @@
 {
   "name": "pgbloom",
-  "version": "1.0.0",
+  "version": "1.2.0",
   "description": "A lightweight PostgreSQL-backed Cache, Pub/Sub, and Queue for Node.js",
   "license": "MIT",
   "type": "module",
