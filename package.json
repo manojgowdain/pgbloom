@@ -1,7 +1,7 @@
 {
-  "name": "pgsnap",
+  "name": "pgbloom",
   "version": "1.0.0",
-  "description": "A lightweight PostgreSQL-backed cache for Node.js",
+  "description": "A lightweight PostgreSQL-backed Cache, Pub/Sub, and Queue for Node.js",
   "license": "MIT",
   "type": "module",
   "main": "./dist/cjs/index.js",
@@ -33,7 +33,9 @@
     "postgres",
     "postgresql",
     "cache",
-    "ttl",
+    "pubsub",
+    "queue",
+    "bloom-filter",
     "nodejs",
     "typescript"
   ],
