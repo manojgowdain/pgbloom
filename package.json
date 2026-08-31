@@ -1,0 +1,52 @@
+{
+  "name": "pgsnap",
+  "version": "1.0.0",
+  "description": "A lightweight PostgreSQL-backed cache for Node.js",
+  "license": "MIT",
+  "type": "module",
+  "main": "./dist/cjs/index.js",
+  "module": "./dist/esm/index.js",
+  "types": "./dist/esm/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/esm/index.d.ts",
+      "import": "./dist/esm/index.js",
+      "require": "./dist/cjs/index.js",
+      "default": "./dist/esm/index.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "npm run build:esm && npm run build:cjs",
+    "build:esm": "tsc -p tsconfig.json",
+    "build:cjs": "tsc -p tsconfig.cjs.json",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:esm": "node test/esm.test.mjs",
+    "test:cjs": "node test/cjs.test.cjs",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": [
+    "postgres",
+    "postgresql",
+    "cache",
+    "ttl",
+    "nodejs",
+    "typescript"
+  ],
+  "dependencies": {
+    "pg": "^8.11.5"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.0",
+    "@types/pg": "^8.11.5",
+    "typescript": "^5.3.0",
+    "vitest": "^1.3.0"
+  },
+  "engines": {
+    "node": ">=14"
+  }
+}
