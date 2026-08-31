@@ -1,5 +1,5 @@
 /**
- * Main PGSnap client.
+ * Main pgbloom client.
  *
  * Provides cache, pub/sub, and queue functionality backed by PostgreSQL.
  * Includes optional internal Bloom Filter for cache optimization.
@@ -48,9 +48,9 @@ import type { CacheExpiry } from "../types/index.js";
 const { Pool } = pg;
 
 /**
- * PGSnap configuration options.
+ * pgbloom configuration options.
  */
-export interface PGSnapOptions {
+export interface PgbloomOptions {
   /**
    * Interval in milliseconds for automatic cleanup of expired cache entries.
    * Set to `false` to disable automatic cleanup.
@@ -126,9 +126,9 @@ export interface PGSnapOptions {
 }
 
 /**
- * Public PGSnap client interface.
+ * Public pgbloom client interface.
  */
-export interface PGSnapClient {
+export interface PgbloomClient {
   // Cache
   getCache<T = unknown>(key: string): Promise<T | null>;
   setCache<T = unknown>(key: string, value: T, expiry?: CacheExpiry): Promise<T>;
@@ -165,9 +165,9 @@ export interface PGSnapClient {
 }
 
 /**
- * Internal state of the PGSnap client.
+ * Internal state of the pgbloom client.
  */
-interface PGSnapInternal {
+interface PgbloomInternal {
   pool: pg.Pool;
   cache: CacheState;
   pubsub: PubSubState;
@@ -177,15 +177,15 @@ interface PGSnapInternal {
 }
 
 /**
- * Creates a new PGSnap client.
+ * Creates a new pgbloom client.
  *
  * @param connectionString - PostgreSQL connection string (postgres:// or postgresql://)
  * @param options - Configuration options
  */
-export async function createPGSnap(
+export async function createPgbloom(
   connectionString: string,
-  options: PGSnapOptions = {},
-): Promise<PGSnapClient> {
+  options: PgbloomOptions = {},
+): Promise<PgbloomClient> {
   validateConnectionString(connectionString);
 
   // Build pool options
@@ -214,7 +214,7 @@ export async function createPGSnap(
   };
 
   // Create internal state
-  const internal: PGSnapInternal = {
+  const internal: PgbloomInternal = {
     pool,
     cache: createCacheState(pool, cacheBloomOptions),
     pubsub: createPubSubState(pool),
@@ -246,7 +246,7 @@ export async function createPGSnap(
   }
 
   // Build the public client interface
-  const client: PGSnapClient = {
+  const client: PgbloomClient = {
     // Cache
     getCache: async <T = unknown>(key: string) => {
       if (internal.closed) throw new Error("PGSnap client is closed");
@@ -345,7 +345,7 @@ export async function createPGSnap(
 }
 
 /**
- * Default export for convenience: `import PGSnap from "pgsnap"`
- * Usage: `const pgsnap = await PGSnap(connectionString, options)`
+ * Default export for convenience: `import pgbloom from "pgbloom"`
+ * Usage: `const pgsnap = await pgbloom(connectionString, options)`
  */
-export default createPGSnap;
+export default createPgbloom;

@@ -1,5 +1,5 @@
 /**
- * PGSnap - PostgreSQL-backed Cache, Pub/Sub, and Queue.
+ * pgbloom - PostgreSQL-backed Cache, Pub/Sub, and Queue.
  *
  * A lightweight, dependency-minimal library for building distributed
  * systems on top of PostgreSQL.
@@ -8,12 +8,12 @@
  */
 
 // Main client
-export { createPGSnap, type PGSnapClient, type PGSnapOptions } from "./client/index.js";
+export { createPgbloom, type PgbloomClient, type PgbloomOptions } from "./client/index.js";
 
 // Types
 export type {
   CacheExpiry,
-  PGSnapOptions as PGSnapOptionsType,
+  PgbloomOptions as PgbloomOptionsType,
 } from "./types/index.js";
 export {
   PGSnapError,
@@ -52,5 +52,5 @@ export type { MessageHandler } from "./pubsub/index.js";
 export type { QueueJob, QueueOptions } from "./queue/index.js";
 
 // Default export
-import { createPGSnap } from "./client/index.js";
-export default createPGSnap;
+import { createPgbloom } from "./client/index.js";
+export default createPgbloom;

@@ -2,4 +2,4 @@
  * Client module exports.
  */
 
-export { createPGSnap, type PGSnapClient, type PGSnapOptions } from "./PGSnap.js";
+export { createPgbloom, type PgbloomClient, type PgbloomOptions } from "./PGSnap.js";

@@ -3,16 +3,16 @@
  */
 
 import { describe, it, expect, beforeAll, afterAll, beforeEach, skip } from "vitest";
-import { createPGSnap } from "pgsnap";
+import { createPgbloom } from "pgbloom";
 
 const SKIP_INTEGRATION = !process.env.DATABASE_URL;
 
 describe("Queue Integration", () => {
-  let pgsnap: Awaited<ReturnType<typeof createPGSnap>>;
+  let pgsnap: Awaited<ReturnType<typeof createPgbloom>>;
 
   beforeAll(async () => {
     if (SKIP_INTEGRATION) return;
-    pgsnap = await createPGSnap(process.env.DATABASE_URL!, {
+    pgsnap = await createPgbloom(process.env.DATABASE_URL!, {
       cleanupInterval: false,
     });
   });
