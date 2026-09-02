@@ -109,7 +109,11 @@ export async function publish(
   payload: unknown,
 ): Promise<void> {
   const json = JSON.stringify(payload);
-  await pool.query(`NOTIFY "${channel}", $1`, [json]);
+  // PostgreSQL NOTIFY does not support parameterized payloads.
+  // We must inline the payload as a string literal.
+  // JSON uses double quotes, so we escape single quotes for SQL string literal.
+  const escapedJson = json.replace(/'/g, "''");
+  await pool.query(`NOTIFY "${channel}", '${escapedJson}'`);
 }
 
 /**

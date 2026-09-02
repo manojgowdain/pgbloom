@@ -76,6 +76,18 @@ export interface PgbloomOptions {
   queue?: {
     visibilityTimeout?: number;
   };
+
+  /**
+   * Lock configuration.
+   */
+  lock?: {
+    /**
+     * Default lock TTL in milliseconds.
+     *
+     * @default 30000 (30 seconds)
+     */
+    defaultTtl?: number;
+  };
 }
 
 /**
