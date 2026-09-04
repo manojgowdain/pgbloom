@@ -1,6 +1,6 @@
 {
   "name": "pgbloom",
-  "version": "1.3.0",
+  "version": "1.4.0",
   "description": "A lightweight PostgreSQL-backed Cache, Pub/Sub, Queue, Locks, Scheduler, Rate Limiting, Events, Counters and Bloom Filter library for Node.js",
   "license": "MIT",
   "type": "module",
