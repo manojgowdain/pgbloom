@@ -1,7 +1,7 @@
 {
   "name": "pgbloom",
   "version": "1.3.0",
-  "description": "A lightweight PostgreSQL-backed Cache, Pub/Sub, and Queue for Node.js",
+  "description": "A lightweight PostgreSQL-backed Cache, Pub/Sub, Queue, Locks, Scheduler, Rate Limiting, Events, Counters and Bloom Filter library for Node.js",
   "license": "MIT",
   "type": "module",
   "main": "./dist/cjs/index.js",
@@ -17,16 +17,22 @@
     "./package.json": "./package.json"
   },
   "files": [
-    "dist"
+    "dist",
+    "README.md"
   ],
   "scripts": {
-    "build": "npm run build:esm && npm run build:cjs",
+    "build": "npm run build:esm && npm run build:cjs && npm run build:cjs:pkg",
     "build:esm": "tsc -p tsconfig.json",
     "build:cjs": "tsc -p tsconfig.cjs.json",
+    "build:cjs:pkg": "node scripts/write-cjs-package-json.mjs",
     "typecheck": "tsc --noEmit",
+    "clean": "rm -rf dist",
     "test": "vitest run",
     "test:esm": "node test/esm.test.mjs",
     "test:cjs": "node test/cjs.test.cjs",
+    "test:integration": "node test/run-tests.js",
+    "test:integration:load": "node test/load/load.test.js",
+    "prepare": "npm run build",
     "prepublishOnly": "npm run build"
   },
   "keywords": [
@@ -37,7 +43,13 @@
     "queue",
     "bloom-filter",
     "nodejs",
-    "typescript"
+    "typescript",
+    "locks",
+    "leader-election",
+    "scheduler",
+    "rate-limit",
+    "events",
+    "counters"
   ],
   "dependencies": {
     "pg": "^8.11.5",
@@ -46,10 +58,21 @@
   "devDependencies": {
     "@types/node": "^20.11.0",
     "@types/pg": "^8.11.5",
+    "express": "^5.2.1",
+    "fastify": "^5.12.1",
     "typescript": "^5.3.0",
     "vitest": "^1.3.0"
   },
   "engines": {
-    "node": ">=14"
-  }
+    "node": ">=18"
+  },
+  "author": "Manoj Gowda <manojgowdain@users.noreply.github.com>",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/manojgowdain/pgsnap.git"
+  },
+  "bugs": {
+    "url": "https://github.com/manojgowdain/pgsnap/issues"
+  },
+  "homepage": "https://github.com/manojgowdain/pgsnap#readme"
 }

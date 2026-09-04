@@ -93,7 +93,7 @@ export async function dequeue<T>(
      SET status = 'processing',
          attempts = attempts + 1,
          started_at = NOW(),
-         available_at = NOW() + (visibility_timeout || 30000) * INTERVAL '1 millisecond'
+         available_at = NOW() + COALESCE(visibility_timeout, 30000) * INTERVAL '1 millisecond'
      WHERE id = (
        SELECT id FROM pgsnap_queue
        WHERE queue_name = $1

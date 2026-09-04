@@ -1,0 +1,70 @@
+{
+  "name": "@manojgowdain/pgbloom",
+  "version": "1.3.0",
+  "license": "MIT",
+  "description": "A lightweight PostgreSQL-backed Cache, Pub/Sub, Queue, Locks, Scheduler, Rate Limiting, Events, Counters and Bloom Filter library for Node.js",
+  "homepage": "https://github.com/manojgowdain/pgbloom#readme",
+  "repository": "https://github.com/manojgowdain/pgbloom",
+  "bugs": "https://github.com/manojgowdain/pgbloom/issues",
+  "keywords": [
+    "postgres",
+    "postgresql",
+    "cache",
+    "pubsub",
+    "queue",
+    "bloom-filter",
+    "nodejs",
+    "typescript",
+    "locks",
+    "leader-election",
+    "scheduler",
+    "rate-limit",
+    "events",
+    "counters"
+  ],
+  "exports": "./mod.ts",
+  "include": [
+    "src/**/*",
+    "mod.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist",
+    "test",
+    "docs",
+    ".claude",
+    "*.tgz",
+    ".git",
+    ".gitignore",
+    "tsconfig*.json",
+    "vitest.config.ts",
+    "bun.lock",
+    "package-lock.json"
+  ],
+  "publish": {
+    "include": [
+      "src/**/*",
+      "mod.ts",
+      "README.md",
+      "LICENSE"
+    ],
+    "exclude": [
+      "node_modules",
+      "dist",
+      "test",
+      "docs",
+      ".claude",
+      "*.tgz",
+      ".git",
+      ".gitignore",
+      "tsconfig*.json",
+      "vitest.config.ts",
+      "bun.lock",
+      "package-lock.json"
+    ]
+  },
+  "imports": {
+    "pg": "npm:pg@^8.11.5",
+    "ssdiskdb": "npm:ssdiskdb@^1.1.0"
+  }
+}

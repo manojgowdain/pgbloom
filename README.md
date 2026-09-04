@@ -4,11 +4,96 @@ A lightweight PostgreSQL-backed **Cache**, **Pub/Sub**, **Queue**, **Locks**, **
 
 ## Installation
 
+Requires **Node.js ≥ 18** and a running **PostgreSQL** instance.
+
+### npm
+
 ```bash
 npm install pgbloom
 ```
 
-Requires Node.js 14+ and a PostgreSQL database.
+```ts
+import PGBloom from "pgbloom";
+
+const client = await PGBloom(process.env.DATABASE_URL!);
+```
+
+### JSR
+
+```bash
+# Deno
+deno add @manojgowdain/pgbloom
+
+# npm (with the JSR CLI)
+npx jsr add @manojgowdain/pgbloom
+
+# pnpm / yarn / bun
+pnpm add jsr:@manojgowdain/pgbloom
+yarn add jsr:@manojgowdain/pgbloom
+bun add jsr:@manojgowdain/pgbloom
+```
+
+```ts
+// Deno
+import PGBloom from "jsr:@manojgowdain/pgbloom";
+```
+
+> **JSR runtime note:** PGBloom depends on `pg` (node-postgres) and `ssdiskdb`, both of which target Node.js. JSR consumers must run in a Node.js-compatible runtime (Node 18+, Bun, or Deno with `--unstable-bare-node-builtins --node-modules-dir`). Pure-Deno JSR usage is **not** supported because of these native filesystem and TCP dependencies.
+
+### Git
+
+For unreleased versions, feature branches, or local development:
+
+```bash
+# npm
+npm install git+https://github.com/manojgowdain/pgsnap.git
+
+# Pin to a tag, branch, or commit
+npm install git+https://github.com/manojgowdain/pgsnap.git#v1.3.0
+npm install git+https://github.com/manojgowdain/pgsnap.git#main
+npm install git+https://github.com/manojgowdain/pgsnap.git#<commit-sha>
+
+# pnpm
+pnpm add git+https://github.com/manojgowdain/pgsnap.git
+
+# Bun
+bun add git+https://github.com/manojgowdain/pgsnap.git
+```
+
+The package automatically builds itself via the `prepare` lifecycle script on `npm install`.
+
+```ts
+// Same import after a Git install
+import PGBloom from "pgbloom";
+```
+
+---
+
+## One Library. Multiple Distribution Channels.
+
+PGBloom is built from a **single TypeScript source tree** (`src/`) and ships the **same public API** to every consumer:
+
+```
+                   src/
+                    |
+          +---------+---------+
+          |         |         |
+         npm       JSR       Git
+          |         |         |
+          +---------+---------+
+                    |
+                PGBloom API
+```
+
+You should never see different behavior depending on how you installed it. The default export and every named export work identically in all three channels.
+
+---
+
+## Which installation should I use?
+
+- **npm** — recommended for Node.js production applications.
+- **JSR** — recommended for JSR-oriented TypeScript workflows (Deno, Bun, modern Node with `node:` built-ins).
+- **Git** — for development, unreleased features, testing branches, contributing, or pinning a specific commit/tag.
 
 ---
 
@@ -447,14 +532,66 @@ type BloomFilterValue = string | number | boolean | bigint | null;
 
 ## Module Formats
 
-Both ESM and CommonJS are supported:
+ESM (default), CommonJS, and JSR are all supported from a single source:
 
 ```typescript
-// ESM
-import pgbloom, { BloomFilter } from "pgbloom";
+// npm — ESM
+import PGBloom, { BloomFilter } from "pgbloom";
 
-// CommonJS
-const { default: pgbloom, BloomFilter } = require("pgbloom");
+// npm — CommonJS
+const { default: PGBloom, BloomFilter } = require("pgbloom");
+
+// JSR (Deno)
+import PGBloom, { BloomFilter } from "jsr:@manojgowdain/pgbloom";
+```
+
+---
+
+## Runtime Support
+
+| Runtime | Status | Notes |
+| --- | --- | --- |
+| Node.js ≥ 18 (npm) | ✅ Supported | Primary target. Full feature set. |
+| Node.js ≥ 18 (Git) | ✅ Supported | `prepare` script builds on install. |
+| JSR (Deno/Bun with node compat) | ⚠️ Best-effort | Requires Node-compatible built-ins (`node:fs`, `node:crypto`, `net`). |
+| Browser | ❌ Unsupported | Requires PostgreSQL + filesystem. |
+| Pure Deno (no Node compat) | ❌ Unsupported | `pg` and `ssdiskdb` need `node:*` modules. |
+
+---
+
+## Publishing (Maintainer Guide)
+
+The same source is published to npm and JSR. Git consumers fetch the source directly.
+
+```bash
+# 1. Update version in package.json AND jsr.json (keep in sync)
+# 2. Run tests
+npm run typecheck
+npm run build
+
+# 3. Validate npm package contents
+npm pack --dry-run
+
+# 4. Validate JSR package (requires auth for real publish)
+npx jsr publish --dry-run
+
+# 5. Publish to npm
+npm login
+npm publish
+
+# 6. Publish to JSR
+npx jsr login
+npx jsr publish
+
+# 7. Tag the release
+git tag v1.3.0
+git push origin v1.3.0
+```
+
+**Versioning:** npm and JSR versions are kept in sync. A release goes to both registries with the same semver. Git consumers can pin a tag:
+
+```bash
+npm install git+https://github.com/manojgowdain/pgsnap.git#v1.3.0
 ```
 
 ---
