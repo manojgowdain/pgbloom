@@ -2,7 +2,7 @@
   "name": "@manojgowdain/pgbloom",
   "version": "1.3.0",
   "license": "MIT",
-  "description": "A lightweight PostgreSQL-backed Cache, Pub/Sub, Queue, Locks, Scheduler, Rate Limiting, Events, Counters and Bloom Filter library for Node.js",
+  "description": "PGBloom is a PostgreSQL-first infrastructure toolkit for JavaScript and TypeScript providing caching, Pub/Sub, queues, distributed locks, leader election, scheduling, rate limiting, events, counters, and Bloom filters.",
   "homepage": "https://github.com/manojgowdain/pgbloom#readme",
   "repository": "https://github.com/manojgowdain/pgbloom",
   "bugs": "https://github.com/manojgowdain/pgbloom/issues",

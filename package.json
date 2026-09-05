@@ -1,7 +1,7 @@
 {
   "name": "pgbloom",
-  "version": "1.4.0",
-  "description": "A lightweight PostgreSQL-backed Cache, Pub/Sub, Queue, Locks, Scheduler, Rate Limiting, Events, Counters and Bloom Filter library for Node.js",
+  "version": "1.5.0",
+  "description": "PGBloom is a PostgreSQL-first infrastructure toolkit for JavaScript and TypeScript providing caching, Pub/Sub, queues, distributed locks, leader election, scheduling, rate limiting, events, counters, and Bloom filters.",
   "license": "MIT",
   "type": "module",
   "main": "./dist/cjs/index.js",
@@ -14,7 +14,19 @@
       "require": "./dist/cjs/index.js",
       "default": "./dist/esm/index.js"
     },
-    "./package.json": "./package.json"
+    "./package.json": "./package.json",
+    "./browser": {
+      "types": "./dist/esm/browser.d.ts",
+      "import": "./dist/esm/browser.js",
+      "require": "./dist/cjs/browser.js",
+      "default": "./dist/esm/browser.js"
+    },
+    "./server": {
+      "types": "./dist/esm/server.d.ts",
+      "import": "./dist/esm/server.js",
+      "require": "./dist/cjs/server.js",
+      "default": "./dist/esm/server.js"
+    }
   },
   "files": [
     "dist",

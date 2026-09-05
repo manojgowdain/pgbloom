@@ -11,7 +11,7 @@ import {
   BloomFilterConfigError,
   encodeValue,
   hashPair,
-} from "pgsnap";
+} from "pgbloom";
 
 // ============================================================
 // PUBLIC BLOOM FILTER TESTS

@@ -156,6 +156,51 @@ await client.close();
 
 ---
 
+## Browser-Safe API
+
+PGBloom provides a **browser-safe entry point** that exports only runtime-independent functionality:
+
+```typescript
+import { BloomFilter, serialize, deserialize, validateKey } from "pgbloom/browser";
+
+// Bloom Filter - works entirely in the browser
+const bloom = new BloomFilter({ expectedItems: 10000, falsePositiveRate: 0.01 });
+bloom.add("user:123");
+console.log(bloom.has("user:123")); // true
+console.log(bloom.has("user:999")); // false (definitely not present)
+
+// Serialization utilities
+const serialized = serialize({ name: "test", value: 123 });
+const deserialized = deserialize(serialized);
+
+// Validation
+validateKey("valid-key"); // passes
+validateKey(""); // throws PGSnapKeyError
+```
+
+**Browser Architecture:**
+
+```
+Browser App → HTTP/RPC → Backend Server → PGBloom → PostgreSQL
+```
+
+The browser bundle is **tree-shakable** and contains **no Node.js dependencies** (no `pg`, no `ssdiskdb`, no `fs`, `net`, `tls`, etc.).
+
+---
+
+## Server Entry Point
+
+For server applications, use the full-featured server entry point:
+
+```typescript
+import { createPgbloom, BloomFilter } from "pgbloom/server";
+
+// Or import everything (re-exports from main)
+import pgbloom, { BloomFilter } from "pgbloom";
+```
+
+---
+
 ## Configuration
 
 ```typescript
@@ -549,13 +594,22 @@ import PGBloom, { BloomFilter } from "jsr:@manojgowdain/pgbloom";
 
 ## Runtime Support
 
-| Runtime | Status | Notes |
-| --- | --- | --- |
-| Node.js ≥ 18 (npm) | ✅ Supported | Primary target. Full feature set. |
-| Node.js ≥ 18 (Git) | ✅ Supported | `prepare` script builds on install. |
-| JSR (Deno/Bun with node compat) | ⚠️ Best-effort | Requires Node-compatible built-ins (`node:fs`, `node:crypto`, `net`). |
-| Browser | ❌ Unsupported | Requires PostgreSQL + filesystem. |
-| Pure Deno (no Node compat) | ❌ Unsupported | `pg` and `ssdiskdb` need `node:*` modules. |
+| Runtime | Core (Bloom, Serialization, Validation) | PostgreSQL Features | Notes |
+|---|---|---|---|
+| Node.js ≥ 18 (npm) | ✅ Supported | ✅ Supported | Primary target. Full feature set. |
+| Node.js ≥ 18 (Git) | ✅ Supported | ✅ Supported | `prepare` script builds on install. |
+| JSR (Deno with node compat) | ✅ Supported | ✅ Supported | Requires `--unstable-bare-node-builtins --node-modules-dir`. |
+| JSR (Bun) | ✅ Supported | ✅ Supported | Native Node.js compatibility. |
+| Browser | ✅ Supported | ❌ Unsupported | Use `pgbloom/browser` entry point. |
+| Pure Deno (no Node compat) | ❌ Unsupported | ❌ Unsupported | `pg` and `ssdiskdb` need `node:*` modules. |
+| Cloudflare Workers | ✅ Supported* | ❌ Unsupported | Core APIs only via `pgbloom/browser`. |
+| Deno Deploy | ✅ Supported* | ❌ Unsupported | Core APIs only via `pgbloom/browser`. |
+| Vercel Edge | ✅ Supported* | ❌ Unsupported | Core APIs only via `pgbloom/browser`. |
+| Netlify Edge | ✅ Supported* | ❌ Unsupported | Core APIs only via `pgbloom/browser`. |
+
+*Browser/Edge runtimes can use the browser-safe entry point (`pgbloom/browser`) which exports Bloom Filter, serialization, and validation utilities. PostgreSQL-backed features require a server runtime.
+
+**Explanation:** Browser support refers to browser-safe modules (`pgbloom/browser`) and does not mean browsers can directly connect to PostgreSQL. Browser applications should access PostgreSQL features via HTTP/RPC to a backend server running PGBloom.
 
 ---
 
@@ -575,13 +629,8 @@ npm pack --dry-run
 # 4. Validate JSR package (requires auth for real publish)
 npx jsr publish --dry-run
 
-# 5. Publish to npm
-npm login
-npm publish
-
-# 6. Publish to JSR
-npx jsr login
-npx jsr publish
+# 5. Publish to npm (uses GitHub Actions trusted publishing)
+# 6. Publish to JSR (uses GitHub Actions trusted publishing)
 
 # 7. Tag the release
 git tag v1.3.0
@@ -593,6 +642,17 @@ git push origin v1.3.0
 ```bash
 npm install git+https://github.com/manojgowdain/pgsnap.git#v1.3.0
 ```
+
+---
+
+## Provenance & Trusted Publishing
+
+PGBloom uses GitHub Actions with OIDC trusted publishing for both npm and JSR:
+
+- **npm provenance**: Enabled via `--provenance` flag in publish workflow
+- **JSR provenance**: Enabled via `deno run -A jsr publish` in GitHub Actions
+
+No long-lived registry tokens are stored. Publishing happens automatically on version tags via CI/CD.
 
 ---
 
