@@ -12,6 +12,7 @@ import {
   clearCacheQuery,
   clearExpiredCacheQuery,
   loadCacheKeys,
+  CacheKeyNotFoundError,
 } from "./queries.js";
 
 /**
@@ -201,6 +202,8 @@ export async function getCache<T = unknown>(
   }
 
   // Query PostgreSQL (the source of truth)
+  // CacheKeyNotFoundError is thrown when key doesn't exist - let it propagate
+  // so the server can return 404. A stored null value returns null from deserialize.
   return getCacheQuery<T>(state.pool, key);
 }
 

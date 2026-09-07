@@ -6,7 +6,7 @@
  */
 
 import express from "express";
-import { createPgbloom } from "../../dist/esm/index.js";
+import { createPgbloom, CacheKeyNotFoundError } from "../../dist/esm/index.js";
 import { RUN_ID, key, channel, queueName, scheduleName, eventType, counterKey, lockKey, resourceKey } from "../helpers/test-data.js";
 
 // ============================================================
@@ -90,6 +90,9 @@ export class ExpressPgBloomServer {
         if (value === null) return res.status(404).json({ error: "not found" });
         res.json({ value });
       } catch (e) {
+        if (e.name === "CacheKeyNotFoundError") {
+          return res.status(404).json({ error: "not found" });
+        }
         res.status(500).json({ error: e.message });
       }
     });

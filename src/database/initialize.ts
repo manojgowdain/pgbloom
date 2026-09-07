@@ -104,7 +104,7 @@ export async function initializeRateLimitTable(pool: Pool): Promise<void> {
       key TEXT NOT NULL,
       window_start TIMESTAMPTZ NOT NULL,
       window_end TIMESTAMPTZ NOT NULL,
-      count INT NOT NULL DEFAULT 0,
+      count NUMERIC NOT NULL DEFAULT 0,
       limit_val INT NOT NULL,
       algorithm TEXT NOT NULL,
       PRIMARY KEY (key, window_start, algorithm)

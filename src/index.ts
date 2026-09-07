@@ -51,6 +51,7 @@ export {
 
 // Cache
 export type { CacheBloomOptions } from "./cache/index.js";
+export { CacheKeyNotFoundError } from "./cache/queries.js";
 
 // Pub/Sub
 export type { MessageHandler } from "./pubsub/index.js";

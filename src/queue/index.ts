@@ -12,6 +12,7 @@ export interface QueueJob<T = unknown> {
   attempts: number;
   maxAttempts: number;
   visibilityTimeout: number;
+  status: string;
   createdAt: Date;
   availableAt: Date;
   startedAt: Date | null;
@@ -209,6 +210,7 @@ function mapRowToJob<T>(row: Record<string, unknown>): QueueJob<T> {
     attempts: Number(row.attempts),
     maxAttempts: Number(row.max_attempts),
     visibilityTimeout: Number(row.visibility_timeout),
+    status: (row.status as string) ?? "pending",
     createdAt: new Date(row.created_at as string),
     availableAt: new Date(row.available_at as string),
     startedAt: row.started_at ? new Date(row.started_at as string) : null,

@@ -3,11 +3,11 @@
  */
 
 import { Pool } from "pg";
-import { serialize } from "../utils/serialize.js";
 import { EventHistoryOptions } from "./types.js";
 
 /**
  * Inserts an event into the pgbloom_events table and sends a NOTIFY.
+ * Payload and metadata are stored as JSONB, so we use JSON.stringify directly.
  */
 export async function insertEvent(
   pool: Pool,
@@ -16,12 +16,11 @@ export async function insertEvent(
   payload: unknown,
   metadata: Record<string, unknown> = {}
 ): Promise<void> {
-  const serializedPayload = serialize(payload);
   const result = await pool.query(
     `INSERT INTO pgbloom_events (event_id, type, payload, metadata)
      VALUES ($1, $2, $3, $4)
      RETURNING id, created_at`,
-    [eventId, type, serializedPayload, JSON.stringify(metadata)]
+    [eventId, type, JSON.stringify(payload), JSON.stringify(metadata)]
   );
 
   const row = result.rows[0];
@@ -37,7 +36,7 @@ export async function insertEvent(
   // We must inline the payload as a string literal.
   // JSON uses double quotes, so we escape single quotes for SQL string literal.
   const escapedPayload = notifyPayload.replace(/'/g, "''");
-  await pool.query(`NOTIFY pgbloom_events, '${escapedPayload}'`);
+  await pool.query(`NOTIFY "pgbloom_events", '${escapedPayload}'`);
 }
 
 /**

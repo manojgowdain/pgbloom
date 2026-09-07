@@ -5,6 +5,7 @@
 import { Pool } from "pg";
 import { serialize } from "../utils/serialize.js";
 import { deserialize } from "../utils/deserialize.js";
+import { PGSnapKeyError } from "../utils/validation.js";
 
 /**
  * Inserts or updates a cache entry.
@@ -25,12 +26,25 @@ export async function setCacheQuery(
 }
 
 /**
- * Retrieves a cache entry by key. Returns null if not found or expired.
+ * Error thrown when a cache key is not found.
+ * This allows callers to distinguish between "key not found" and "stored null value".
+ */
+export class CacheKeyNotFoundError extends Error {
+  constructor(key: string) {
+    super(`Cache key not found: ${key}`);
+    this.name = "CacheKeyNotFoundError";
+  }
+}
+
+/**
+ * Retrieves a cache entry by key.
+ * @throws {CacheKeyNotFoundError} If the key does not exist or has expired.
+ * Returns the deserialized value, which may be null for stored null values.
  */
 export async function getCacheQuery<T = unknown>(
   pool: Pool,
   key: string,
-): Promise<T | null> {
+): Promise<T> {
   const result = await pool.query(
     `SELECT value FROM pgsnap_cache
      WHERE key = $1 AND expires_at > NOW()`,
@@ -38,10 +52,11 @@ export async function getCacheQuery<T = unknown>(
   );
 
   if (result.rowCount === 0) {
-    return null;
+    throw new CacheKeyNotFoundError(key);
   }
 
-  return deserialize(result.rows[0].value) as T;
+  const serialized = result.rows[0].value;
+  return deserialize(serialized) as T;
 }
 
 /**

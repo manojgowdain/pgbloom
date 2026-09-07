@@ -16,16 +16,20 @@ export async function runTests(baseUrl) {
     const pub = await post(baseUrl, "/pubsub/publish", { channel: ch, message: { hello: "world" } });
     assertOk(pub);
 
-    // Wait for message to arrive - give more time
-    await waitFor(`message on ${ch}`, async () => {
-      const msgs = await get(baseUrl, `/pubsub/messages/${subscriberId}`);
-      return msgs.json.messages.length > 0;
-    }, { timeoutMs: 5000, intervalMs: 100 });
-
+    // Wait for message to arrive with retry
+    await sleep(200);
     const msgs = await get(baseUrl, `/pubsub/messages/${subscriberId}`);
-    assertEqual(msgs.json.messages.length, 1);
-    assertDeepEqual(msgs.json.messages[0].payload, { hello: "world" });
-    assertEqual(msgs.json.messages[0].channel, ch);
+    if (msgs.json.messages.length === 0) {
+      await sleep(300);
+      const msgs2 = await get(baseUrl, `/pubsub/messages/${subscriberId}`);
+      assertEqual(msgs2.json.messages.length, 1);
+      assertDeepEqual(msgs2.json.messages[0].payload, { hello: "world" });
+      assertEqual(msgs2.json.messages[0].channel, ch);
+    } else {
+      assertEqual(msgs.json.messages.length, 1);
+      assertDeepEqual(msgs.json.messages[0].payload, { hello: "world" });
+      assertEqual(msgs.json.messages[0].channel, ch);
+    }
 
     // Cleanup
     await del(baseUrl, `/pubsub/subscribe/${subscriberId}`);

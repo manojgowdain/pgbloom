@@ -130,6 +130,9 @@ const { Pool } = pg;
  * Public pgbloom client interface.
  */
 export interface PgbloomClient {
+  // Internal pool (for cleanup, direct queries, etc.)
+  pool: pg.Pool;
+
   // Cache
   getCache<T = unknown>(key: string): Promise<T | null>;
   setCache<T = unknown>(key: string, value: T, expiry?: CacheExpiry): Promise<T>;
@@ -302,6 +305,7 @@ export async function createPgbloom(
 
   // Build the public client interface
   const client: PgbloomClient = {
+    pool,
     // Cache
     getCache: async <T = unknown>(key: string) => {
       if (internal.closed) throw new Error("PGSnap client is closed");

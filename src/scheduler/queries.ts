@@ -1,6 +1,4 @@
 import { Pool } from "pg";
-import { serialize } from "../utils/serialize.js";
-import { deserialize } from "../utils/deserialize.js";
 
 /**
  * Creates a new scheduled job.
@@ -18,7 +16,7 @@ export async function createSchedule(
 ): Promise<{ id: number }> {
   const priority = options.priority ?? 0;
   const maxAttempts = options.maxAttempts ?? 3;
-  const serializedPayload = serialize(options.payload);
+  const serializedPayload = JSON.stringify(options.payload);
 
   const result = await pool.query(
     `INSERT INTO pgbloom_schedules
@@ -299,7 +297,7 @@ function mapRowToScheduledJob(row: Record<string, unknown>): {
   return {
     id: Number(row.id),
     name: row.name as string,
-    payload: typeof row.payload === "string" ? deserialize(row.payload) : row.payload,
+    payload: typeof row.payload === "string" ? JSON.parse(row.payload) : row.payload,
     runAt: new Date(row.run_at as string),
     priority: Number(row.priority),
     attempts: Number(row.attempts),

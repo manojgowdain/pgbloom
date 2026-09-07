@@ -6,7 +6,7 @@
  */
 
 import Fastify from "fastify";
-import { createPgbloom } from "../../dist/esm/index.js";
+import { createPgbloom, CacheKeyNotFoundError } from "../../dist/esm/index.js";
 import { RUN_ID, key, channel, queueName, scheduleName, eventType, counterKey, lockKey, resourceKey } from "../helpers/test-data.js";
 
 // ============================================================
@@ -14,7 +14,10 @@ import { RUN_ID, key, channel, queueName, scheduleName, eventType, counterKey, l
 // ============================================================
 export class FastifyPgBloomServer {
   constructor() {
-    this.app = Fastify({ logger: false });
+    this.app = Fastify({
+      logger: false,
+      bodyLimit: 1048576, // 1MB
+    });
     this.client = null;
     this.server = null;
     this.pubsubChannels = new Map();
@@ -22,7 +25,27 @@ export class FastifyPgBloomServer {
     this.receivedMessages = new Map();
     this.receivedEvents = new Map();
     this._bloom = null;
+    this._setupJsonParser();
     this._setupRoutes();
+  }
+
+  _setupJsonParser() {
+    // Replace Fastify's default JSON parser to allow empty bodies.
+    // The default parser throws FST_ERR_CTP_EMPTY_JSON_BODY when Content-Type
+    // is application/json but the body is empty — this breaks DELETE requests
+    // and other endpoints that accept but don't require a body.
+    this.app.removeContentTypeParser('application/json');
+    this.app.addContentTypeParser('application/json', { parseAs: 'string' }, (req, body, done) => {
+      try {
+        if (body === '' || body === undefined || body === null) {
+          done(null, {});
+        } else {
+          done(null, JSON.parse(body));
+        }
+      } catch (err) {
+        done(err, undefined);
+      }
+    });
   }
 
   _makeSubscriberId() {
@@ -92,6 +115,10 @@ export class FastifyPgBloomServer {
         }
         return { value };
       } catch (e) {
+        if (e.name === "CacheKeyNotFoundError") {
+          res.status(404);
+          return { error: "not found" };
+        }
         res.status(500);
         return { error: e.message };
       }
