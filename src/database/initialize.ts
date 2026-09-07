@@ -150,6 +150,67 @@ export async function initializeCountersTable(pool: Pool): Promise<void> {
 }
 
 /**
+ * Creates the users table for authentication.
+ */
+export async function initializeUsersTable(pool: Pool): Promise<void> {
+  await pool.query(`
+    CREATE TABLE IF NOT EXISTS pgbloom_users (
+      id BIGSERIAL PRIMARY KEY,
+      email TEXT UNIQUE NOT NULL,
+      password_hash TEXT NOT NULL,
+      name TEXT,
+      email_verified BOOLEAN DEFAULT FALSE,
+      created_at TIMESTAMPTZ DEFAULT NOW(),
+      updated_at TIMESTAMPTZ DEFAULT NOW()
+    );
+    CREATE INDEX IF NOT EXISTS pgbloom_users_email_idx ON pgbloom_users (email);
+  `);
+}
+
+/**
+ * Creates the sessions table for refresh tokens.
+ */
+export async function initializeSessionsTable(pool: Pool): Promise<void> {
+  await pool.query(`
+    CREATE TABLE IF NOT EXISTS pgbloom_sessions (
+      id BIGSERIAL PRIMARY KEY,
+      user_id BIGINT NOT NULL REFERENCES pgbloom_users(id) ON DELETE CASCADE,
+      refresh_token_hash TEXT NOT NULL,
+      user_agent TEXT,
+      ip_address TEXT,
+      expires_at TIMESTAMPTZ NOT NULL,
+      created_at TIMESTAMPTZ DEFAULT NOW(),
+      revoked_at TIMESTAMPTZ
+    );
+    CREATE INDEX IF NOT EXISTS pgbloom_sessions_user_id_idx ON pgbloom_sessions (user_id);
+    CREATE INDEX IF NOT EXISTS pgbloom_sessions_refresh_token_hash_idx ON pgbloom_sessions (refresh_token_hash);
+    CREATE INDEX IF NOT EXISTS pgbloom_sessions_expires_at_idx ON pgbloom_sessions (expires_at);
+  `);
+}
+
+/**
+ * Creates the OTP codes table.
+ */
+export async function initializeOtpCodesTable(pool: Pool): Promise<void> {
+  await pool.query(`
+    CREATE TABLE IF NOT EXISTS pgbloom_otp_codes (
+      id BIGSERIAL PRIMARY KEY,
+      user_id BIGINT REFERENCES pgbloom_users(id) ON DELETE CASCADE,
+      email TEXT NOT NULL,
+      otp_hash TEXT NOT NULL,
+      purpose TEXT NOT NULL,
+      expires_at TIMESTAMPTZ NOT NULL,
+      attempts INT DEFAULT 0,
+      max_attempts INT DEFAULT 5,
+      used BOOLEAN DEFAULT FALSE,
+      created_at TIMESTAMPTZ DEFAULT NOW()
+    );
+    CREATE INDEX IF NOT EXISTS pgbloom_otp_codes_email_purpose_idx ON pgbloom_otp_codes (email, purpose);
+    CREATE INDEX IF NOT EXISTS pgbloom_otp_codes_expires_at_idx ON pgbloom_otp_codes (expires_at);
+  `);
+}
+
+/**
  * Initializes all PGSnap tables.
  */
 export async function initializeAll(pool: Pool): Promise<void> {
@@ -161,4 +222,7 @@ export async function initializeAll(pool: Pool): Promise<void> {
   await initializeRateLimitTable(pool);
   await initializeEventsTable(pool);
   await initializeCountersTable(pool);
+  await initializeUsersTable(pool);
+  await initializeSessionsTable(pool);
+  await initializeOtpCodesTable(pool);
 }

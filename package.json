@@ -1,12 +1,15 @@
 {
   "name": "pgbloom",
-  "version": "1.5.0",
-  "description": "PGBloom is a PostgreSQL-first infrastructure toolkit for JavaScript and TypeScript providing caching, Pub/Sub, queues, distributed locks, leader election, scheduling, rate limiting, events, counters, and Bloom filters.",
+  "version": "1.6.0",
+  "description": "PGBloom is a PostgreSQL-first infrastructure toolkit for JavaScript and TypeScript providing caching, Pub/Sub, queues, distributed locks, leader election, scheduling, rate limiting, events, counters, Bloom filters, CRUD models, authentication, and OTP.",
   "license": "MIT",
   "type": "module",
   "main": "./dist/cjs/index.js",
   "module": "./dist/esm/index.js",
   "types": "./dist/esm/index.d.ts",
+  "bin": {
+    "pgbloom": "./dist/esm/cli/index.js"
+  },
   "exports": {
     ".": {
       "types": "./dist/esm/index.d.ts",
@@ -33,10 +36,11 @@
     "README.md"
   ],
   "scripts": {
-    "build": "npm run build:esm && npm run build:cjs && npm run build:cjs:pkg",
+    "build": "npm run build:esm && npm run build:cjs && npm run build:cjs:pkg && npm run build:cli",
     "build:esm": "tsc -p tsconfig.json",
     "build:cjs": "tsc -p tsconfig.cjs.json",
     "build:cjs:pkg": "node scripts/write-cjs-package-json.mjs",
+    "build:cli": "tsc -p tsconfig.cli.json",
     "typecheck": "tsc --noEmit",
     "clean": "rm -rf dist",
     "test": "vitest run",
@@ -61,15 +65,25 @@
     "scheduler",
     "rate-limit",
     "events",
-    "counters"
+    "counters",
+    "crud",
+    "auth",
+    "otp",
+    "orm"
   ],
   "dependencies": {
+    "@node-rs/argon2": "^2.2.0",
+    "cac": "^7.0.0",
+    "jsonwebtoken": "^9.0.3",
     "pg": "^8.11.5",
     "ssdiskdb": "^1.1.0"
   },
   "devDependencies": {
+    "@types/express": "^5.0.6",
+    "@types/jsonwebtoken": "^9.0.0",
     "@types/node": "^20.11.0",
     "@types/pg": "^8.11.5",
+    "@types/ws": "^8.18.1",
     "express": "^5.2.1",
     "fastify": "^5.12.1",
     "typescript": "^5.3.0",

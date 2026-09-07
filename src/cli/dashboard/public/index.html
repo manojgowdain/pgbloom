@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PGBloom Dashboard</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #0f172a;
+      color: #e2e8f0;
+      min-height: 100vh;
+    }
+    .header {
+      background: #1e293b;
+      padding: 1rem 2rem;
+      border-bottom: 1px solid #334155;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .header h1 { font-size: 1.5rem; color: #38bdf8; }
+    .header .status { color: #94a3b8; font-size: 0.875rem; }
+    .container { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; padding: 1.5rem; }
+    .card {
+      background: #1e293b;
+      border-radius: 0.75rem;
+      padding: 1.5rem;
+      border: 1px solid #334155;
+    }
+    .card h2 { font-size: 1.125rem; color: #94a3b8; margin-bottom: 1rem; text-transform: uppercase; letter-spacing: 0.05em; }
+    .stat { display: flex; justify-content: space-between; padding: 0.5rem 0; border-bottom: 1px solid #334155; }
+    .stat:last-child { border-bottom: none; }
+    .stat-label { color: #94a3b8; }
+    .stat-value { color: #f1f5f9; font-weight: 500; }
+    .activity-log {
+      background: #0f172a;
+      border-radius: 0.5rem;
+      padding: 1rem;
+      height: 300px;
+      overflow-y: auto;
+      font-family: 'Courier New', monospace;
+      font-size: 0.8rem;
+    }
+    .activity-item { padding: 0.25rem 0; border-bottom: 1px solid #1e293b; }
+    .activity-time { color: #64748b; margin-right: 0.5rem; }
+    .activity-type { color: #38bdf8; }
+    .activity-detail { color: #94a3b8; }
+    .tab-bar { display: flex; gap: 0.5rem; margin-bottom: 1.5rem; padding: 0 1.5rem; border-bottom: 1px solid #334155; }
+    .tab { padding: 0.75rem 1.5rem; background: none; border: none; color: #94a3b8; cursor: pointer; border-bottom: 2px solid transparent; }
+    .tab.active { color: #38bdf8; border-bottom-color: #38bdf8; }
+    .tab:hover { color: #e2e8f0; }
+    .content { padding: 0 1.5rem 1.5rem; }
+    .table-container { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; }
+    th, td { text-align: left; padding: 0.75rem; border-bottom: 1px solid #334155; }
+    th { color: #94a3b8; font-weight: 500; text-transform: uppercase; font-size: 0.75rem; letter-spacing: 0.05em; }
+    td { color: #e2e8f0; }
+    tr:hover { background: #33415520; }
+    .badge { display: inline-block; padding: 0.25rem 0.75rem; border-radius: 9999px; font-size: 0.75rem; font-weight: 500; }
+    .badge-success { background: #22c55e20; color: #22c55e; }
+    .badge-warning { background: #f59e0b20; color: #f59e0b; }
+    .badge-info { background: #38bdf820; color: #38bdf8; }
+    .btn { padding: 0.5rem 1rem; border-radius: 0.375rem; border: none; cursor: pointer; font-size: 0.875rem; }
+    .btn-primary { background: #38bdf8; color: #0f172a; }
+    .btn-primary:hover { background: #7dd3fc; }
+    .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 1000; justify-content: center; align-items: center; }
+    .modal.active { display: flex; }
+    .modal-content { background: #1e293b; border-radius: 0.75rem; padding: 2rem; max-width: 600px; width: 90%; max-height: 90vh; overflow-y: auto; }
+    .modal-header { display: flex; justify-content: space-between; margin-bottom: 1.5rem; }
+    .modal-title { font-size: 1.25rem; }
+    .close-btn { background: none; border: none; color: #94a3b8; font-size: 1.5rem; cursor: pointer; }
+    .close-btn:hover { color: #f1f5f9; }
+    .form-group { margin-bottom: 1rem; }
+    .form-label { display: block; color: #94a3b8; margin-bottom: 0.5rem; font-size: 0.875rem; }
+    .form-input { width: 100%; padding: 0.5rem; background: #0f172a; border: 1px solid #334155; border-radius: 0.375rem; color: #e2e8f0; }
+    .form-input:focus { outline: none; border-color: #38bdf8; }
+    .hidden { display: none; }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>PGBloom Dashboard</h1>
+    <div class="status" id="status">Loading...</div>
+  </div>
+
+  <div class="tab-bar">
+    <button class="tab active" onclick="showTab('overview')">Overview</button>
+    <button class="tab" onclick="showTab('models')">Models</button>
+    <button class="tab" onclick="showTab('auth')">Auth</button>
+    <button class="tab" onclick="showTab('database')">Database</button>
+    <button class="tab" onclick="showTab('activity')">Activity</button>
+  </div>
+
+  <div class="content">
+    <!-- Overview Tab -->
+    <div id="tab-overview" class="tab-content">
+      <div class="container">
+        <div class="card">
+          <h2>Database</h2>
+          <div class="stat"><span class="stat-label">Status</span><span class="stat-value" id="db-status">-</span></div>
+          <div class="stat"><span class="stat-label">Version</span><span class="stat-value" id="db-version">-</span></div>
+          <div class="stat"><span class="stat-label">Tables</span><span class="stat-value" id="db-tables">-</span></div>
+        </div>
+        <div class="card">
+          <h2>Cache</h2>
+          <div class="stat"><span class="stat-label">Status</span><span class="stat-value" id="cache-status">-</span></div>
+          <div class="stat"><span class="stat-label">Active</span><span class="stat-value" id="cache-active">-</span></div>
+          <div class="stat"><span class="stat-label">Expired</span><span class="stat-value" id="cache-expired">-</span></div>
+          <div class="stat"><span class="stat-label">Total</span><span class="stat-value" id="cache-total">-</span></div>
+        </div>
+        <div class="card">
+          <h2>Authentication</h2>
+          <div class="stat"><span class="stat-label">Status</span><span class="stat-value" id="auth-status">-</span></div>
+          <div class="stat"><span class="stat-label">Users</span><span class="stat-value" id="auth-users">-</span></div>
+          <div class="stat"><span class="stat-label">Verified</span><span class="stat-value" id="auth-verified">-</span></div>
+          <div class="stat"><span class="stat-label">Active Sessions</span><span class="stat-value" id="auth-sessions">-</span></div>
+        </div>
+        <div class="card">
+          <h2>OTP</h2>
+          <div class="stat"><span class="stat-label">Status</span><span class="stat-value" id="otp-status">-</span></div>
+          <div class="stat"><span class="stat-label">Pending</span><span class="stat-value" id="otp-pending">-</span></div>
+          <div class="stat"><span class="stat-label">Used</span><span class="stat-value" id="otp-used">-</span></div>
+          <div class="stat"><span class="stat-label">Expired</span><span class="stat-value" id="otp-expired">-</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Models Tab -->
+    <div id="tab-models" class="tab-content hidden">
+      <div class="card">
+        <div id="models-list"></div>
+      </div>
+    </div>
+
+    <!-- Auth Tab -->
+    <div id="tab-auth" class="tab-content hidden">
+      <div class="card">
+        <h2>Authentication Overview</h2>
+        <div id="auth-overview"></div>
+      </div>
+    </div>
+
+    <!-- Database Tab -->
+    <div id="tab-database" class="tab-content hidden">
+      <div class="card">
+        <h2>Database Tables</h2>
+        <div id="database-tables"></div>
+      </div>
+    </div>
+
+    <!-- Activity Tab -->
+    <div id="tab-activity" class="tab-content hidden">
+      <div class="card">
+        <h2>Live Activity</h2>
+        <div class="activity-log" id="activity-log"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // State
+    let currentTab = 'overview';
+    let ws = null;
+    let activities = [];
+
+    // Initialize
+    async function init() {
+      await loadStatus();
+      setupWebSocket();
+      setInterval(loadStatus, 5000);
+    }
+
+    // Tab switching
+    function showTab(tab) {
+      currentTab = tab;
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      event.target.classList.add('active');
+      document.querySelectorAll('.tab-content').forEach(c => c.classList.add('hidden'));
+      document.getElementById(`tab-${tab}`).classList.remove('hidden');
+    }
+
+    // Load status from API
+    async function loadStatus() {
+      try {
+        const response = await fetch('/api/status');
+        const data = await response.json();
+
+        if (data.error) {
+          document.getElementById('status').textContent = 'Error: ' + data.error;
+          return;
+        }
+
+        document.getElementById('status').textContent = 'Connected • ' + new Date().toLocaleTimeString();
+
+        // Database
+        document.getElementById('db-status').textContent = data.database.connected ? 'Connected' : 'Disconnected';
+        document.getElementById('db-status').className = 'stat-value ' + (data.database.connected ? 'badge-success' : 'badge-warning');
+        document.getElementById('db-version').textContent = data.database.version;
+        document.getElementById('db-tables').textContent = data.tables?.length || 0;
+
+        // Cache
+        document.getElementById('cache-status').textContent = data.config?.cache?.enabled ? 'Enabled' : 'Disabled';
+        document.getElementById('cache-active').textContent = data.cache?.active || 0;
+        document.getElementById('cache-expired').textContent = data.cache?.expired || 0;
+        document.getElementById('cache-total').textContent = data.cache?.total || 0;
+
+        // Auth
+        document.getElementById('auth-status').textContent = data.config?.auth?.enabled ? 'Enabled' : 'Disabled';
+        document.getElementById('auth-users').textContent = data.auth?.users || 0;
+        document.getElementById('auth-verified').textContent = data.auth?.verified || 0;
+        document.getElementById('auth-sessions').textContent = data.auth?.sessions || 0;
+
+        // OTP
+        document.getElementById('otp-status').textContent = data.config?.otp?.enabled ? 'Enabled' : 'Disabled';
+        document.getElementById('otp-pending').textContent = data.otp?.pending || 0;
+        document.getElementById('otp-used').textContent = data.otp?.used || 0;
+        document.getElementById('otp-expired').textContent = data.otp?.expired || 0;
+
+        // Update tab-specific data
+        if (currentTab === 'models') {
+          loadModels(data.tables);
+        }
+        if (currentTab === 'database') {
+          loadDatabaseTables(data.tables);
+        }
+      } catch (err) {
+        document.getElementById('status').textContent = 'Disconnected';
+      }
+    }
+
+    // Load models list
+    async function loadModels(tables) {
+      const container = document.getElementById('models-list');
+      if (!tables || tables.length === 0) {
+        container.innerHTML = '<p style="color: #94a3b8;">No user tables found</p>';
+        return;
+      }
+
+      let html = '<h3 style="margin-bottom: 1rem; color: #94a3b8;">Models</h3><table><thead><tr><th>Name</th><th>Rows</th><th>Actions</th></tr></thead><tbody>';
+      for (const table of tables) {
+        html += `<tr>
+          <td>${table.table_name}</td>
+          <td>${table.row_count}</td>
+          <td><button class="btn btn-primary" onclick="viewModel('${table.table_name}')">View</button></td>
+        </tr>`;
+      }
+      html += '</tbody></table>';
+      container.innerHTML = html;
+    }
+
+    // View model data
+    async function viewModel(modelName) {
+      const response = await fetch(`/api/models/${modelName}?limit=20`);
+      const data = await response.json();
+
+      const container = document.getElementById('models-list');
+      let html = `<h3 style="margin-bottom: 1rem;">${modelName} (${data.pagination.total} rows)</h3>`;
+
+      if (data.data.length > 0) {
+        const columns = Object.keys(data.data[0]);
+        html += '<div class="table-container"><table><thead><tr>';
+        for (const col of columns) {
+          html += `<th>${col}</th>`;
+        }
+        html += '</tr></thead><tbody>';
+        for (const row of data.data) {
+          html += '<tr>';
+          for (const col of columns) {
+            let value = row[col];
+            if (value === null) value = '<em style="color: #64748b;">null</em>';
+            else if (typeof value === 'object') value = JSON.stringify(value);
+            html += `<td>${value}</td>`;
+          }
+          html += '</tr>';
+        }
+        html += '</tbody></table></div>';
+      } else {
+        html += '<p style="color: #94a3b8;">No data</p>';
+      }
+
+      container.innerHTML = html;
+    }
+
+    // Load database tables
+    async function loadDatabaseTables(tables) {
+      const container = document.getElementById('database-tables');
+      if (!tables || tables.length === 0) {
+        container.innerHTML = '<p style="color: #94a3b8;">No tables found</p>';
+        return;
+      }
+
+      let html = '<div class="table-container"><table><thead><tr><th>Table</th><th>Rows</th></tr></thead><tbody>';
+      for (const table of tables) {
+        html += `<tr><td>${table.table_name}</td><td>${table.row_count}</td></tr>`;
+      }
+      html += '</tbody></table></div>';
+      container.innerHTML = html;
+    }
+
+    // Setup WebSocket for live activity
+    function setupWebSocket() {
+      const wsUrl = `ws://${window.location.host}`;
+      try {
+        ws = new WebSocket(wsUrl);
+        ws.onmessage = (event) => {
+          const msg = JSON.parse(event.data);
+          if (msg.type === 'activity') {
+            addActivity(msg.data);
+          }
+        };
+      } catch (err) {
+        console.error('WebSocket error:', err);
+      }
+    }
+
+    // Add activity to log
+    function addActivity(activity) {
+      const log = document.getElementById('activity-log');
+      const time = new Date().toLocaleTimeString();
+      const item = document.createElement('div');
+      item.className = 'activity-item';
+      item.innerHTML = `<span class="activity-time">${time}</span><span class="activity-type">${activity.type.toUpperCase()}</span> <span class="activity-detail">${activity.detail || ''}</span>`;
+      log.insertBefore(item, log.firstChild);
+      activities.unshift({ time, ...activity });
+      if (activities.length > 100) activities.pop();
+    }
+
+    // Start
+    init();
+  </script>
+</body>
+</html>

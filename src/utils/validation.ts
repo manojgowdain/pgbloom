@@ -1,43 +1,86 @@
 /**
- * Custom error classes used by PGSnap.
+ * Custom error classes used by PGBloom.
  */
 
-export class PGSnapError extends Error {
+export class PGBloomError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = "PGBloomError";
+  }
+}
+
+export class PGBloomDatabaseError extends PGBloomError {
+  constructor(message: string) {
+    super(message);
+    this.name = "PGBloomDatabaseError";
+  }
+}
+
+export class PGBloomValidationError extends PGBloomError {
+  constructor(message: string) {
+    super(message);
+    this.name = "PGBloomValidationError";
+  }
+}
+
+export class PGBloomAuthError extends PGBloomError {
+  constructor(message: string) {
+    super(message);
+    this.name = "PGBloomAuthError";
+  }
+}
+
+export class PGBloomOTPError extends PGBloomError {
+  constructor(message: string) {
+    super(message);
+    this.name = "PGBloomOTPError";
+  }
+}
+
+export class PGBloomConfigError extends PGBloomError {
+  constructor(message: string) {
+    super(message);
+    this.name = "PGBloomConfigError";
+  }
+}
+
+// Legacy aliases for backward compatibility
+export class PGSnapError extends PGBloomError {
   constructor(message: string) {
     super(message);
     this.name = "PGSnapError";
   }
 }
 
-export class PGSnapConnectionError extends PGSnapError {
+export class PGSnapConnectionError extends PGBloomDatabaseError {
   constructor(message: string) {
     super(message);
     this.name = "PGSnapConnectionError";
   }
 }
 
-export class PGSnapKeyError extends PGSnapError {
+export class PGSnapKeyError extends PGBloomValidationError {
   constructor(message: string) {
     super(message);
     this.name = "PGSnapKeyError";
   }
 }
 
-export class PGSnapExpiryError extends PGSnapError {
+export class PGSnapExpiryError extends PGBloomError {
   constructor(message: string) {
     super(message);
     this.name = "PGSnapExpiryError";
   }
 }
 
-export class PGSnapSerializationError extends PGSnapError {
+export class PGSnapSerializationError extends PGBloomError {
   constructor(message: string) {
     super(message);
     this.name = "PGSnapSerializationError";
   }
 }
 
-export class PGSnapDeserializationError extends PGSnapError {
+export class PGSnapDeserializationError extends PGBloomError {
   constructor(message: string) {
     super(message);
     this.name = "PGSnapDeserializationError";

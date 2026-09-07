@@ -88,6 +88,152 @@ export interface PgbloomOptions {
      */
     defaultTtl?: number;
   };
+
+  /**
+   * Scheduler configuration.
+   */
+  scheduler?: {
+    /**
+     * Unique identifier for this scheduler worker instance.
+     * Required for distributed scheduling.
+     */
+    workerId?: string;
+
+    /**
+     * Polling interval in milliseconds for checking due jobs.
+     * @default 1000
+     */
+    pollingInterval?: number;
+  };
+
+  /**
+   * Rate limit configuration.
+   */
+  rateLimit?: {
+    /**
+     * Default algorithm to use ('fixed_window', 'sliding_window', 'token_bucket').
+     * @default 'fixed_window'
+     */
+    defaultAlgorithm?: "fixed_window" | "sliding_window" | "token_bucket";
+  };
+
+  /**
+   * Events configuration.
+   */
+  events?: {
+    /**
+     * Maximum number of event listeners per type.
+     * @default 100
+     */
+    maxListenersPerType?: number;
+  };
+
+  /**
+   * Counter configuration.
+   */
+  counter?: {
+    /**
+     * Default consistency level for counter reads.
+     * @default 'strong'
+     */
+    defaultConsistency?: "strong" | "local" | "eventual";
+  };
+
+  /**
+   * Model/CRUD configuration.
+   */
+  model?: {
+    /**
+     * Whether to automatically create tables for models.
+     * @default false
+     */
+    autoCreateTables?: boolean;
+
+    /**
+     * Whether to enable caching for model queries by default.
+     * @default false
+     */
+    cache?: boolean;
+  };
+
+  /**
+   * Authentication configuration.
+   */
+  auth?: {
+    /**
+     * Whether to enable authentication features.
+     * @default false
+     */
+    enabled?: boolean;
+
+    /**
+     * Access token expiry (e.g., "15m", "1h", "7d").
+     * @default "15m"
+     */
+    accessTokenExpiry?: string;
+
+    /**
+     * Refresh token expiry (e.g., "30d", "1y").
+     * @default "30d"
+     */
+    refreshTokenExpiry?: string;
+
+    /**
+     * JWT secret for signing tokens.
+     * Should be set via environment variable in production.
+     */
+    jwtSecret?: string;
+
+    /**
+     * Password hashing algorithm.
+     * @default "argon2id"
+     */
+    passwordHashAlgorithm?: "argon2id" | "bcrypt";
+
+    /**
+     * Argon2id options.
+     */
+    argon2Options?: {
+      memoryCost?: number;
+      timeCost?: number;
+      parallelism?: number;
+    };
+  };
+
+  /**
+   * OTP configuration.
+   */
+  otp?: {
+    /**
+     * Whether to enable OTP features.
+     * @default false
+     */
+    enabled?: boolean;
+
+    /**
+     * OTP expiry (e.g., "5m", "10m").
+     * @default "5m"
+     */
+    expiry?: string;
+
+    /**
+     * Maximum verification attempts per OTP.
+     * @default 5
+     */
+    maxAttempts?: number;
+
+    /**
+     * Resend cooldown (e.g., "60s", "2m").
+     * @default "60s"
+     */
+    resendCooldown?: string;
+
+    /**
+     * OTP code length.
+     * @default 6
+     */
+    length?: number;
+  };
 }
 
 /**

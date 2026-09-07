@@ -1,0 +1,54 @@
+name: Documentation Validation
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  validate:
+    name: Validate Documentation
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Validate HTML entry point
+        run: |
+          test -f docs/index.html
+          echo "✓ docs/index.html exists"
+
+      - name: Check for broken internal asset references
+        run: |
+          if [ -f docs/index.html ]; then
+            grep -oE 'href="[^"]*"' docs/index.html | sed 's/href="//;s/"//' | grep -v '^https://' | grep -v '^#' | while read -r href; do
+              if [ -n "$href" ] && [ ! -f "docs/${href#/}" ] && [ ! -f "docs/${href}" ]; then
+                echo "⚠ Warning: Referenced file not found: $href"
+              fi
+            done
+            echo "✓ Asset reference check complete"
+          fi
+
+      - name: Validate basic HTML structure
+        run: |
+          if [ -f docs/index.html ]; then
+            head -1 docs/index.html | grep -q '<!DOCTYPE html>'
+            echo "✓ Valid DOCTYPE"
+            grep -q '<html' docs/index.html
+            echo "✓ HTML tag present"
+            grep -q '<head>' docs/index.html
+            echo "✓ Head section present"
+            grep -q '<body' docs/index.html
+            echo "✓ Body section present"
+          fi
+
+      - name: Check for common issues
+        run: |
+          if [ -f docs/index.html ]; then
+            # Check for inline scripts that might reference non-existent elements
+            grep -n 'document\.getElementById' docs/index.html | while IFS=: read -r line content; do
+              echo "  Line $line: $content"
+            done
+            echo "✓ Basic JS reference check complete"
+          fi

@@ -45,6 +45,7 @@ import {
 } from "../queue/index.js";
 import { validateConnectionString } from "../utils/validation.js";
 import type { CacheExpiry } from "../types/index.js";
+import type { PgbloomOptions as PgbloomOptionsType } from "../types/index.js";
 
 // Lock imports
 import {
@@ -105,146 +106,25 @@ import {
   type CounterState,
 } from "../counter/index.js";
 
+// Model imports
+import {
+  createModelState,
+  createModel,
+  type Model,
+  type ModelSchema,
+  type ModelOptions,
+  type ModelState,
+} from "../model/index.js";
+
+// Auth imports - class as value, types separate
+import {
+  createAuthState,
+  createAuth,
+  Auth,
+} from "../auth/index.js";
+import type { Auth as AuthType, AuthState } from "../auth/index.js";
+
 const { Pool } = pg;
-
-/**
- * pgbloom configuration options.
- */
-export interface PgbloomOptions {
-  /**
-   * Interval in milliseconds for automatic cleanup of expired cache entries.
-   * Set to `false` to disable automatic cleanup.
-   *
-   * @default 5 * 60 * 1000 (5 minutes)
-   */
-  cleanupInterval?: number | false;
-
-  /**
-   * Whether to enable the internal Bloom Filter for cache lookups.
-   * When enabled, getCache() first checks the Bloom Filter and skips
-   * the database query for keys that are definitely not present.
-   *
-   * The Bloom Filter has NO false negatives but MAY have false positives.
-   * PostgreSQL remains the source of truth.
-   *
-   * @default false
-   */
-  bloomFilter?: boolean;
-
-  /**
-   * Configuration for the internal Bloom Filter (when enabled).
-   */
-  bloom?: {
-    /**
-     * Expected number of cache entries. Used to size the Bloom Filter.
-     *
-     * @default 10000
-     */
-    expectedItems?: number;
-
-    /**
-     * Target false positive rate (0 < rate < 1).
-     *
-     * @default 0.01
-     */
-    falsePositiveRate?: number;
-
-    /**
-     * Interval in milliseconds for rebuilding the Bloom Filter from
-     * the current database state. Set to `false` to disable.
-     *
-     * @default 15 * 60 * 1000 (15 minutes)
-     */
-    rebuildInterval?: number | false;
-  };
-
-  /**
-   * Maximum number of connections in the PostgreSQL pool.
-   *
-   * @default 10
-   */
-  maxConnections?: number;
-
-  /**
-   * Number of milliseconds a connection is allowed to be idle before being closed.
-   *
-   * @default 30000
-   */
-  idleTimeoutMillis?: number;
-
-  /**
-   * Number of milliseconds to wait for a connection to become available.
-   *
-   * @default 2000
-   */
-  connectionTimeoutMillis?: number;
-
-  /**
-   * Queue configuration.
-   */
-  queue?: QueueOptions;
-
-  /**
-   * Lock configuration.
-   */
-  lock?: {
-    /**
-     * Default TTL for locks in milliseconds.
-     * @default 30000
-     */
-    defaultTtl?: number;
-  };
-
-  /**
-   * Scheduler configuration.
-   */
-  scheduler?: {
-    /**
-     * Unique identifier for this scheduler worker instance.
-     * Required for distributed scheduling.
-     */
-    workerId?: string;
-
-    /**
-     * Polling interval in milliseconds for checking due jobs.
-     * @default 1000
-     */
-    pollingInterval?: number;
-  };
-
-  /**
-   * Rate limit configuration.
-   */
-  rateLimit?: {
-    /**
-     * Default algorithm to use ('fixed_window', 'sliding_window', 'token_bucket').
-     * @default 'fixed_window'
-     */
-    defaultAlgorithm?: 'fixed_window' | 'sliding_window' | 'token_bucket';
-  };
-
-  /**
-   * Events configuration.
-   */
-  events?: {
-    /**
-     * Maximum number of event listeners per type.
-     * @default 100
-     */
-    maxListenersPerType?: number;
-  };
-
-  /**
-   * Counter configuration.
-   */
-  counter?: {
-    /**
-     * Default consistency level for counter reads.
-     * @default 'strong'
-     */
-    defaultConsistency?: 'strong' | 'local' | 'eventual';
-  };
-}
 
 /**
  * Public pgbloom client interface.
@@ -278,7 +158,7 @@ export interface PgbloomClient {
   }>;
   cleanupJobs(queueName: string, olderThan?: Date): Promise<number>;
 
-  // Lock (only available when `options.lock` is provided)
+  // Lock
   tryLock(key: string, options?: { ttl?: number }): Promise<boolean>;
   lock(key: string, options?: { ttl?: number; timeout?: number }): Promise<void>;
   unlock(key: string, holderId: string): Promise<void>;
@@ -286,7 +166,7 @@ export interface PgbloomClient {
   releaseLeadership(resource: string, holderId: string): Promise<void>;
   isLeader(resource: string, holderId: string): Promise<boolean>;
 
-  // Scheduler (only available when `options.scheduler` is provided)
+  // Scheduler
   schedule(name: string, payload: unknown, runAt: Date, options?: { priority?: number; maxAttempts?: number; interval?: string }): Promise<{ id: number }>;
   scheduleRecurring(name: string, payload: unknown, interval: string, options?: { priority?: number; maxAttempts?: number }): Promise<{ id: number }>;
   cancelSchedule(jobId: number): Promise<void>;
@@ -312,7 +192,13 @@ export interface PgbloomClient {
   setCounter(key: string, value: number): Promise<{ value: number }>;
   removeCounter(key: string): Promise<boolean>;
 
-  // Bloom Filter (public API - independent from internal cache Bloom Filter)
+  // Model / CRUD
+  model<T = any>(tableName: string, schema?: ModelSchema, options?: ModelOptions): Model<T>;
+
+  // Authentication
+  auth(options?: any): AuthType;
+
+  // Bloom Filter
   bloom(options?: { expectedItems?: number; falsePositiveRate?: number }): BloomFilter;
 
   // Lifecycle
@@ -332,6 +218,8 @@ interface PgbloomInternal {
   rateLimitState: RateLimitState | null;
   eventsState: EventsState | null;
   counterState: CounterState | null;
+  modelStates: Map<string, ModelState>;
+  authState: AuthState | null;
   cleanupTimer: ReturnType<typeof setInterval> | null;
   closed: boolean;
 }
@@ -344,7 +232,7 @@ interface PgbloomInternal {
  */
 export async function createPgbloom(
   connectionString: string,
-  options: PgbloomOptions = {},
+  options: PgbloomOptionsType = {},
 ): Promise<PgbloomClient> {
   validateConnectionString(connectionString);
 
@@ -384,6 +272,8 @@ export async function createPgbloom(
     rateLimitState: createRateLimitState(pool, null),
     eventsState: createEventsState(pool, null),
     counterState: createCounterState(pool, null),
+    modelStates: new Map(),
+    authState: null,
     cleanupTimer: null,
     closed: false,
   };
@@ -631,6 +521,31 @@ export async function createPgbloom(
     removeCounter: async (key: string) => {
       if (internal.closed) throw new Error("PGSnap client is closed");
       return counterRemove(internal.counterState!, key);
+    },
+
+    // Model / CRUD
+    model: (tableName: string, schema?: ModelSchema, options?: ModelOptions) => {
+      if (internal.closed) throw new Error("PGSnap client is closed");
+      let state = internal.modelStates.get(tableName);
+      if (!state) {
+        state = createModelState(pool, tableName, schema || {}, options || {}, null);
+        internal.modelStates.set(tableName, state);
+      }
+      return createModel(pool, tableName, schema || {}, options || {}, null);
+    },
+
+    // Authentication
+    auth: (authOptions?: any) => {
+      if (internal.closed) throw new Error("PGSnap client is closed");
+      if (!internal.authState) {
+        const authOpts: any = {
+          ...(options as any).auth,
+          ...authOptions,
+          jwtSecret: authOptions?.jwtSecret || (options as any).auth?.jwtSecret || process.env.JWT_SECRET || process.env.PGBLOOM_JWT_SECRET,
+        };
+        internal.authState = createAuthState(pool, null, authOpts);
+      }
+      return new Auth(internal.authState);
     },
 
     // Public Bloom Filter API (independent from internal cache Bloom Filter)
