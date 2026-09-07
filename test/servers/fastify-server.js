@@ -97,20 +97,7 @@ export class FastifyPgBloomServer {
       }
     });
 
-    app.head("/cache/:key", async (req, res) => {
-      try {
-        const value = await self.client.getCache(req.params.key);
-        if (value === null) {
-          res.status(404);
-          return;
-        }
-        res.status(200);
-        return;
-      } catch (e) {
-        res.status(500);
-        return;
-      }
-    });
+    // Fastify auto-handles HEAD for GET routes, no need for explicit HEAD handler
 
     app.get("/cache/:key/exists", async (req, res) => {
       try {
