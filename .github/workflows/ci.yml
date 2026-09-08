@@ -37,6 +37,19 @@ jobs:
       - name: Validate ESM and CommonJS entrypoints
         run: bun run test:esm && bun run test:cjs
 
+      - name: Run coverage
+        run: npm run test:coverage
+
+      - name: Upload coverage artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: node-coverage
+          path: coverage/
+          if-no-files-found: error
+
+      - name: Run build
+        run: npm run build
+
   test-deno:
     name: Test on Deno
     runs-on: ubuntu-latest
@@ -52,19 +65,6 @@ jobs:
 
       - name: Run Deno smoke test
         run: deno test --no-check --sloppy-imports --no-config test/deno-smoke.test.ts
-
-      - name: Run coverage
-        run: npm run test:coverage
-
-      - name: Upload coverage artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: node-coverage
-          path: coverage/
-          if-no-files-found: error
-
-      - name: Run build
-        run: npm run build
 
   test-bun:
     name: Test on Bun

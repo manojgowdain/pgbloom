@@ -8,6 +8,7 @@ export default defineConfig({
   test: {
     environment: "node",
     include: ["test/**/*.test.ts"],
+    exclude: ["test/deno-smoke.test.ts", "test/bun-smoke.test.ts"],
     coverage: {
       provider: "v8",
       include: ["**/src/**/*.ts"],
