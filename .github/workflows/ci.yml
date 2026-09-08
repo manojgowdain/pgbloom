@@ -34,6 +34,25 @@ jobs:
       - name: Run Docker PostgreSQL suite
         run: npm run test:docker
 
+      - name: Validate ESM and CommonJS entrypoints
+        run: bun run test:esm && bun run test:cjs
+
+  test-deno:
+    name: Test on Deno
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: denoland/setup-deno@v2
+        with:
+          deno-version: v2.x
+
+      - name: Check JSR entrypoint
+        run: deno run -A --check=none --sloppy-imports --node-modules-dir --config jsr.json mod.ts
+
+      - name: Run Deno smoke test
+        run: deno test --no-check --sloppy-imports --no-config test/deno-smoke.test.ts
+
       - name: Run coverage
         run: npm run test:coverage
 
