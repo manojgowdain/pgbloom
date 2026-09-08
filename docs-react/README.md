@@ -11,7 +11,7 @@ npm install
 npm run dev
 ```
 
-Open the URL printed by Vite. The app is configured with the `/pgbloom/` base path used by the production site.
+Open the URL printed by Vite. The production site uses the custom domain `pgbloom.iotkit.in`, so assets are served from the domain root.
 
 ## Production Build
 
@@ -22,7 +22,7 @@ npm run build
 npm run preview
 ```
 
-The production output is written to `dist/`. Vite generates asset URLs under `/pgbloom/`, so deploy the site at that path (for example, `https://example.com/pgbloom/`). The favicon is also resolved through Vite's base URL and should be served as `/pgbloom/favicon.ico`.
+The production output is written to `dist/`. Vite generates root-relative asset URLs for the custom domain, such as `/assets/index-<hash>.js` and `/favicon.ico`. GitHub Pages may still redirect the repository URL to `https://pgbloom.iotkit.in/`.
 
 ## Scripts
 
