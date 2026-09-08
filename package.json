@@ -44,6 +44,7 @@
     "typecheck": "tsc --noEmit",
     "clean": "rm -rf dist",
     "test": "vitest run",
+    "test:bun": "bun test test/bun-smoke.test.ts",
     "test:coverage": "vitest run --coverage",
     "test:esm": "node test/esm.test.mjs",
     "test:cjs": "node test/cjs.test.cjs",

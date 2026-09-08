@@ -191,6 +191,10 @@ function SectionInstallNpm() {
       <h2 className="section-title">Installation</h2>
       <p className="section-subtitle">Requires Node.js &ge; 18 and a running PostgreSQL instance.</p>
 
+      <p style={{ marginTop: 24, color: 'var(--text-secondary)', fontSize: '0.9rem' }}>
+        <strong>Recommended:</strong> use JSR for Deno, Bun, and JSR-oriented TypeScript projects. Use npm for standard Node.js applications.
+      </p>
+
       <h3 style={{ marginTop: 32, marginBottom: 12 }}>npm</h3>
       <div className="code-block">
         <div className="code-header">
@@ -209,7 +213,7 @@ function SectionInstallNpm() {
       const client = await createPgbloom(process.env.DATABASE_URL!);`}</code></pre>
       </div>
 
-      <h3 style={{ marginTop: 32, marginBottom: 12 }}>JSR</h3>
+      <h3 style={{ marginTop: 32, marginBottom: 12 }}>JSR (recommended for Deno and Bun)</h3>
       <div className="code-block">
         <div className="code-header">
           <span className="code-lang">bash</span>
@@ -605,7 +609,7 @@ function Footer() {
 }
 
 const jsrInstall = `# Deno
-deno add @manojgowdain/pgbloom
+deno add jsr:@manojgowdain/pgbloom
 
 # npm (with the JSR CLI)
 npx jsr add @manojgowdain/pgbloom

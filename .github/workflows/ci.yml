@@ -82,8 +82,11 @@ jobs:
       - name: Run typecheck
         run: bun run typecheck
 
-      - name: Run unit tests
-        run: bun test
+      - name: Build package
+        run: bun run build
+
+      - name: Run Bun unit tests
+        run: bun run test:bun
 
       - name: Run Docker PostgreSQL suite
         run: npm run test:docker

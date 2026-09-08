@@ -40,6 +40,26 @@ Browser path: Browser app -> HTTP/RPC -> server PGBloom -> PostgreSQL
 
 ## Installation
 
+### Recommended: JSR
+
+Use JSR for Deno, Bun, and JSR-oriented TypeScript projects:
+
+```bash
+# Deno
+deno add jsr:@manojgowdain/pgbloom
+
+# Bun
+bun add jsr:@manojgowdain/pgbloom
+```
+
+```ts
+import { createPgbloom } from "jsr:@manojgowdain/pgbloom";
+```
+
+### npm
+
+Use npm for standard Node.js applications:
+
 ```bash
 npm install pgbloom
 ```
@@ -50,7 +70,7 @@ The package requires Node.js 18 or newer and PostgreSQL. Git installs build thro
 npm install git+https://github.com/manojgowdain/pgsnap.git
 ```
 
-JSR consumers can use `@manojgowdain/pgbloom` in Node-compatible Deno or Bun. Pure Deno without Node compatibility is not supported because PostgreSQL and local-storage dependencies use Node APIs.
+JSR consumers must use a Node-compatible runtime. Pure Deno without Node compatibility is not supported because PostgreSQL and local-storage dependencies use Node APIs. For npm-oriented workflows, install `pgbloom` from npm instead.
 
 ## Quick start
 
