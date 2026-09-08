@@ -35,7 +35,7 @@ jobs:
         run: npm run test:docker
 
       - name: Validate ESM and CommonJS entrypoints
-        run: bun run test:esm && bun run test:cjs
+        run: npm run test:esm && npm run test:cjs
 
       - name: Run coverage
         run: npm run test:coverage
