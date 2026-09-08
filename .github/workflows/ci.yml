@@ -12,20 +12,6 @@ jobs:
   test:
     name: Test on Node.js
     runs-on: ubuntu-latest
-    services:
-      postgres:
-        image: postgres:16
-        env:
-          POSTGRES_PASSWORD: postgres
-          POSTGRES_USER: postgres
-          POSTGRES_DB: test
-        ports:
-          - 5432:5432
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
     steps:
       - uses: actions/checkout@v4
 
@@ -39,13 +25,24 @@ jobs:
       - name: Run typecheck
         run: npm run typecheck
 
+      - name: Validate package entrypoints
+        run: npm run build && npm run test:esm && npm run test:cjs
+
       - name: Run unit tests
         run: npm test
 
-      - name: Run integration tests
-        run: npm run test:integration
-        env:
-          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/test
+      - name: Run Docker PostgreSQL suite
+        run: npm run test:docker
+
+      - name: Run coverage
+        run: npm run test:coverage
+
+      - name: Upload coverage artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: node-coverage
+          path: coverage/
+          if-no-files-found: error
 
       - name: Run build
         run: npm run build
@@ -53,20 +50,6 @@ jobs:
   test-bun:
     name: Test on Bun
     runs-on: ubuntu-latest
-    services:
-      postgres:
-        image: postgres:16
-        env:
-          POSTGRES_PASSWORD: postgres
-          POSTGRES_USER: postgres
-          POSTGRES_DB: test
-        ports:
-          - 5432:5432
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
     steps:
       - uses: actions/checkout@v4
 
@@ -83,7 +66,5 @@ jobs:
       - name: Run unit tests
         run: bun test
 
-      - name: Run integration tests
-        run: bun run test:integration
-        env:
-          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/test
+      - name: Run Docker PostgreSQL suite
+        run: npm run test:docker

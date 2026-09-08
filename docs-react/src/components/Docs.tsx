@@ -8,6 +8,8 @@ const sections = [
   { id: 'browser-api', label: 'Browser API' },
   { id: 'configuration', label: 'Configuration' },
   { id: 'cache', label: 'Cache' },
+  { id: 'crud', label: 'CRUD Models' },
+  { id: 'authentication', label: 'Authentication' },
   { id: 'pubsub', label: 'Pub/Sub' },
   { id: 'queue', label: 'Queue' },
   { id: 'locks', label: 'Locks' },
@@ -17,6 +19,7 @@ const sections = [
   { id: 'counters', label: 'Counters' },
   { id: 'bloom-filter', label: 'Bloom Filter' },
   { id: 'local-storage', label: 'Local Storage' },
+  { id: 'errors', label: 'Errors & Security' },
   { id: 'runtimes', label: 'Runtimes' },
 ]
 
@@ -86,6 +89,8 @@ export default function Docs() {
           <SectionBrowserApi />
           <SectionConfiguration />
           <SectionCache />
+          <SectionCrud />
+          <SectionAuthentication />
           <SectionPubSub />
           <SectionQueue />
           <SectionLocks />
@@ -95,6 +100,7 @@ export default function Docs() {
           <SectionCounters />
           <SectionBloomFilter />
           <SectionLocalStorage />
+          <SectionErrors />
           <SectionRuntimes />
           <SectionPublishing />
           <Footer />
@@ -196,11 +202,11 @@ function SectionInstallNpm() {
       <div className="code-block">
         <div className="code-header">
           <span className="code-lang">typescript</span>
-          <button className="code-copy" onClick={() => navigator.clipboard.writeText('import PGBloom from "pgbloom";\n\nconst client = await PGBloom(process.env.DATABASE_URL!);')}>Copy</button>
+          <button className="code-copy" onClick={() => navigator.clipboard.writeText('import { createPgbloom } from "pgbloom";\n\nconst client = await createPgbloom(process.env.DATABASE_URL!);')}>Copy</button>
         </div>
-        <pre><code>{`import PGBloom from "pgbloom";
+        <pre><code>{`import { createPgbloom } from "pgbloom";
 
-const client = await PGBloom(process.env.DATABASE_URL!);`}</code></pre>
+      const client = await createPgbloom(process.env.DATABASE_URL!);`}</code></pre>
       </div>
 
       <h3 style={{ marginTop: 32, marginBottom: 12 }}>JSR</h3>
@@ -488,6 +494,45 @@ function SectionLocalStorage() {
   )
 }
 
+function SectionCrud() {
+  return (
+    <section className="section" id="crud">
+      <h2 className="section-title">CRUD Models</h2>
+      <p className="section-subtitle">Schema-driven PostgreSQL models with typed filters and updates.</p>
+      <div className="code-block">
+        <div className="code-header"><span className="code-lang">typescript</span><button className="code-copy" onClick={() => navigator.clipboard.writeText(crudCode)}>Copy</button></div>
+        <pre><code>{crudCode}</code></pre>
+      </div>
+      <p>Models provide <code>create</code>, <code>insertMany</code>, <code>find</code>, <code>findOne</code>, <code>findById</code>, <code>exists</code>, <code>countDocuments</code>, <code>distinct</code>, update methods, delete methods, <code>createTable</code>, and <code>syncIndexes</code>. Filters support <code>$eq</code>, <code>$ne</code>, comparison, membership, existence, and regex operators. Updates support <code>$set</code>, <code>$inc</code>, <code>$unset</code>, <code>$push</code>, and <code>$pull</code>.</p>
+    </section>
+  )
+}
+
+function SectionAuthentication() {
+  return (
+    <section className="section" id="authentication">
+      <h2 className="section-title">Authentication</h2>
+      <p className="section-subtitle">Argon2id passwords, HS256 JWTs, refresh sessions, and OTP workflows.</p>
+      <div className="code-block">
+        <div className="code-header"><span className="code-lang">typescript</span><button className="code-copy" onClick={() => navigator.clipboard.writeText(authCode)}>Copy</button></div>
+        <pre><code>{authCode}</code></pre>
+      </div>
+      <p><code>Auth</code> also supports logout, token refresh, token verification, password reset, email verification, passwordless login, and cleanup. PGBloom does not provide route middleware, roles, permissions, or authorization guards; implement those in the application layer after verifying the token. OTP delivery is not connected to an email provider.</p>
+    </section>
+  )
+}
+
+function SectionErrors() {
+  return (
+    <section className="section" id="errors">
+      <h2 className="section-title">Errors &amp; Security</h2>
+      <p className="section-subtitle">Handle package errors explicitly and keep server-only secrets on the server.</p>
+      <p>Use <code>PGBloomError</code>, <code>PGBloomDatabaseError</code>, <code>PGBloomValidationError</code>, <code>PGBloomAuthError</code>, <code>PGBloomOTPError</code>, <code>PGBloomConfigError</code>, <code>BloomFilterError</code>, and <code>BloomFilterConfigError</code> with <code>instanceof</code>. Legacy <code>PGSnap*</code> aliases remain available. Bloom positives are not proof of existence, and browser code must never receive database credentials or JWT secrets.</p>
+      <div className="code-block"><pre><code>{errorCode}</code></pre></div>
+    </section>
+  )
+}
+
 function SectionRuntimes() {
   const rows = [
     ['Node.js ≥ 18 (npm)', '✅', '✅', 'Primary target. Full feature set.'],
@@ -584,9 +629,9 @@ pnpm add git+https://github.com/manojgowdain/pgbloom.git
 # Bun
 bun add git+https://github.com/manojgowdain/pgbloom.git`
 
-const quickStartCode = `import pgbloom from "pgbloom";
+const quickStartCode = `import { createPgbloom } from "pgbloom";
 
-const client = await pgbloom(process.env.DATABASE_URL!);
+const client = await createPgbloom(process.env.DATABASE_URL!);
 
 // Cache
 await client.setCache("user:123", { name: "user", role: "admin" }, 3600000);
@@ -879,14 +924,53 @@ interface BloomFilter {
   static fromJSON(json: BloomFilterJSON): BloomFilter;
 }`
 
-const localCacheCode = `const client = await pgbloom(DATABASE_URL, {
-  localCache: {
-    enabled: true,
-    path: "./.pgbloom",      // local storage directory
-    ttl: 60000,              // default TTL in ms
-    maxEntries: 100000       // max memory cache entries
+const localCacheCode = `import { createLocalStore, MemoryCache } from "pgbloom/server";
+
+const disk = await createLocalStore({ path: "./.pgbloom" });
+const cache = new MemoryCache(disk, { maxEntries: 1000, ttl: 60000 });
+
+await cache.set("session:42", { active: true });
+const value = await cache.get("session:42");
+await cache.close();`
+
+const crudCode = `const users = client.model("app_users", {
+  email: { type: "string", required: true, unique: true },
+  active: { type: "boolean", default: true },
+}, { timestamps: true });
+
+await users.createTable();
+await users.create({ email: "ada@example.com" });
+const active = await users.find(
+  { active: true },
+  { sort: { email: 1 }, limit: 20 },
+);
+await users.updateOne(
+  { email: "ada@example.com" },
+  { $set: { active: false } },
+);`
+
+const authCode = `const auth = client.auth({
+  jwtSecret: process.env.JWT_SECRET,
+  accessTokenExpiry: "15m",
+  refreshTokenExpiry: "30d",
+});
+
+const result = await auth.signup({
+  email: "ada@example.com",
+  password: "correct horse battery staple",
+});
+const currentUser = await auth.me(result.accessToken);
+const refreshed = await auth.refreshToken(result.refreshToken);
+await auth.logout(refreshed.refreshToken);`
+
+const errorCode = `try {
+  await client.setCache("", "value");
+} catch (error) {
+  if (error instanceof PGSnapKeyError) {
+    console.error("Invalid cache key", error.message);
   }
-});`
+  throw error;
+}`
 
 const publishCode = `# 1. Update version in package.json AND jsr.json (keep in sync)
 # 2. Run tests
@@ -904,4 +988,3 @@ npx jsr publish --dry-run
 git tag v1.3.0
 git push origin v1.3.0`
 
-export {}

@@ -6,7 +6,7 @@
  */
 
 import { describe, it, expect, beforeAll, afterAll, beforeEach, skip } from "vitest";
-import { createPgbloom } from "pgbloom";
+import { createPgbloom } from "../src/index.ts";
 
 // Skip by default - requires PostgreSQL
 const SKIP_INTEGRATION = !process.env.DATABASE_URL;

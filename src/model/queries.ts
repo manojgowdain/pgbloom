@@ -347,8 +347,8 @@ export async function updateOneQuery(
   update: UpdateOps
 ): Promise<{ matched: number; modified: number }> {
   const columnMap = state.columnMap;
-  const where = buildWhereClause(filter, columnMap);
-  const setClause = buildUpdateSetClause(update, state.schema, columnMap, where.paramIndex, state.options.timestamps);
+  const setClause = buildUpdateSetClause(update, state.schema, columnMap, 1, state.options.timestamps);
+  const where = buildWhereClause(filter, columnMap, setClause.paramIndex);
 
   if (!setClause.sql) {
     return { matched: 0, modified: 0 };
@@ -386,8 +386,8 @@ export async function findOneAndUpdateQuery<T>(
   options: { new?: boolean } = {}
 ): Promise<T | null> {
   const columnMap = state.columnMap;
-  const where = buildWhereClause(filter, columnMap);
-  const setClause = buildUpdateSetClause(update, state.schema, columnMap, where.paramIndex, state.options.timestamps);
+  const setClause = buildUpdateSetClause(update, state.schema, columnMap, 1, state.options.timestamps);
+  const where = buildWhereClause(filter, columnMap, setClause.paramIndex);
 
   if (!setClause.sql) {
     return findOneQuery(state, filter);

@@ -11,7 +11,7 @@ import {
   BloomFilterConfigError,
   encodeValue,
   hashPair,
-} from "pgbloom";
+} from "../src/index.ts";
 
 // ============================================================
 // PUBLIC BLOOM FILTER TESTS

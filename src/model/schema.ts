@@ -101,6 +101,16 @@ export function documentToRow(schema: ModelSchema, doc: Record<string, any>): Re
 export function rowToDocument(schema: ModelSchema, row: Record<string, any>): Record<string, any> {
   const doc: Record<string, any> = {};
 
+  if (row.id !== undefined) {
+    doc.id = row.id;
+  }
+  if (row.created_at !== undefined) {
+    doc.createdAt = new Date(row.created_at);
+  }
+  if (row.updated_at !== undefined) {
+    doc.updatedAt = new Date(row.updated_at);
+  }
+
   for (const [field, def] of Object.entries(schema)) {
     const columnName = toSnakeCase(field);
     const value = row[columnName];
@@ -108,6 +118,8 @@ export function rowToDocument(schema: ModelSchema, row: Record<string, any>): Re
 
     if (def.type === "date" && value) {
       doc[field] = new Date(value as string);
+    } else if (def.type === "number" && typeof value === "string") {
+      doc[field] = Number(value);
     } else if (def.type === "json" && typeof value === "string") {
       try {
         doc[field] = JSON.parse(value);

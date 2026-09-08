@@ -201,10 +201,16 @@ export async function getCache<T = unknown>(
     // Possibly present - must query PostgreSQL
   }
 
-  // Query PostgreSQL (the source of truth)
-  // CacheKeyNotFoundError is thrown when key doesn't exist - let it propagate
-  // so the server can return 404. A stored null value returns null from deserialize.
-  return getCacheQuery<T>(state.pool, key);
+  // Query PostgreSQL (the source of truth). A missing key is a normal cache miss
+  // at this API boundary; stored null values still deserialize to null.
+  try {
+    return await getCacheQuery<T>(state.pool, key);
+  } catch (error) {
+    if (error instanceof CacheKeyNotFoundError) {
+      return null;
+    }
+    throw error;
+  }
 }
 
 export async function deleteCache(state: CacheState, key: string): Promise<void> {

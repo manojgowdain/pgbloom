@@ -1,32 +1,32 @@
-# React + TypeScript + Vite
+# PGBloom Documentation
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+This folder contains the React documentation site for PGBloom. It uses React, TypeScript, and Vite.
 
-Currently, two official plugins are available:
+## Development
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+From this directory, install dependencies and start the Vite development server:
 
-## React Compiler
-
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the Oxlint configuration
-
-If you are developing a production application, we recommend enabling type-aware lint rules by installing `oxlint-tsgolint` and editing `.oxlintrc.json`:
-
-```json
-{
-  "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["react", "typescript", "oxc"],
-  "options": {
-    "typeAware": true
-  },
-  "rules": {
-    "react/rules-of-hooks": "error",
-    "react/only-export-components": ["warn", { "allowConstantExport": true }]
-  }
-}
+```bash
+npm install
+npm run dev
 ```
 
-See the [Oxlint rules documentation](https://oxc.rs/docs/guide/usage/linter/rules) for the full list of rules and categories.
+Open the URL printed by Vite. The app is configured with the `/pgbloom/` base path used by the production site.
+
+## Production Build
+
+Build the site and preview the generated files locally:
+
+```bash
+npm run build
+npm run preview
+```
+
+The production output is written to `dist/`. Vite generates asset URLs under `/pgbloom/`, so deploy the site at that path (for example, `https://example.com/pgbloom/`). The favicon is also resolved through Vite's base URL and should be served as `/pgbloom/favicon.ico`.
+
+## Scripts
+
+- `npm run dev` starts the development server.
+- `npm run build` type-checks and creates the production bundle.
+- `npm run lint` runs Oxlint.
+- `npm run preview` serves the production bundle locally.

@@ -1,0 +1,20 @@
+services:
+  postgres:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: pgbloom
+      POSTGRES_PASSWORD: pgbloom
+      POSTGRES_DB: pgbloom_test
+    ports:
+      - "${PGBLOOM_TEST_PORT:-55432}:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U pgbloom -d pgbloom_test"]
+      interval: 2s
+      timeout: 3s
+      retries: 30
+      start_period: 2s
+    volumes:
+      - pgbloom-test-data:/var/lib/postgresql/data
+
+volumes:
+  pgbloom-test-data:
