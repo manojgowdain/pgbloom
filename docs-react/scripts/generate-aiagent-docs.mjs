@@ -85,7 +85,7 @@ const sitemapRoutes = [
   ["/", "weekly", "1.0"],
   ["/playground", "weekly", "0.9"],
   ["/aiagent/", "monthly", "0.9"],
-  ...documents.map(([slug, , type]) => [`/aiagent/${slug === "api" ? "api/" : slug}`, type === "feature" || type === "tool" ? "monthly" : "quarterly", type === "overview" || type === "api" || type === "tool" ? "0.9" : "0.7"]),
+  ...documents.map(([slug, , type]) => [`/aiagent/${slug === "api" ? "api/" : slug}`, type === "feature" || type === "tool" ? "monthly" : "yearly", type === "overview" || type === "api" || type === "tool" ? "0.9" : "0.7"]),
   ["/aiagent/index.json", "monthly", "0.4"],
   ["/aiagent/llms.txt", "monthly", "0.4"],
   ["/aiagent/llms-full.txt", "monthly", "0.4"],
