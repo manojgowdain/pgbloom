@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+
+# Canonical HTML, AI-agent, and machine-readable documentation entrypoints.
+Sitemap: https://pgbloom.iotkit.in/sitemap.xml

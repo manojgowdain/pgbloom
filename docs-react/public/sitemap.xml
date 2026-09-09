@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url><loc>https://pgbloom.iotkit.in/</loc><changefreq>weekly</changefreq><priority>1.0</priority></url>
+  <url><loc>https://pgbloom.iotkit.in/playground</loc><changefreq>weekly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://pgbloom.iotkit.in/aiagent/</loc><changefreq>monthly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://pgbloom.iotkit.in/aiagent/overview</loc><changefreq>quarterly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://pgbloom.iotkit.in/aiagent/installation</loc><changefreq>quarterly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://pgbloom.iotkit.in/aiagent/quickstart</loc><changefreq>quarterly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://pgbloom.iotkit.in/aiagent/architecture</loc><changefreq>quarterly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://pgbloom.iotkit.in/aiagent/configuration</loc><changefreq>quarterly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://pgbloom.iotkit.in/aiagent/api/</loc><changefreq>quarterly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://pgbloom.iotkit.in/aiagent/cache</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://pgbloom.iotkit.in/aiagent/pubsub</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://pgbloom.iotkit.in/aiagent/queue</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://pgbloom.iotkit.in/aiagent/locks</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://pgbloom.iotkit.in/aiagent/scheduler</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://pgbloom.iotkit.in/aiagent/rate-limit</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://pgbloom.iotkit.in/aiagent/events</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://pgbloom.iotkit.in/aiagent/counters</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://pgbloom.iotkit.in/aiagent/model</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://pgbloom.iotkit.in/aiagent/auth</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://pgbloom.iotkit.in/aiagent/bloom-filter</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://pgbloom.iotkit.in/aiagent/storage</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://pgbloom.iotkit.in/aiagent/browser</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://pgbloom.iotkit.in/aiagent/testing</loc><changefreq>quarterly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://pgbloom.iotkit.in/aiagent/deployment</loc><changefreq>quarterly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://pgbloom.iotkit.in/aiagent/troubleshooting</loc><changefreq>quarterly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://pgbloom.iotkit.in/aiagent/examples</loc><changefreq>quarterly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://pgbloom.iotkit.in/aiagent/playground</loc><changefreq>monthly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://pgbloom.iotkit.in/aiagent/index.json</loc><changefreq>monthly</changefreq><priority>0.4</priority></url>
+  <url><loc>https://pgbloom.iotkit.in/aiagent/llms.txt</loc><changefreq>monthly</changefreq><priority>0.4</priority></url>
+  <url><loc>https://pgbloom.iotkit.in/aiagent/llms-full.txt</loc><changefreq>monthly</changefreq><priority>0.4</priority></url>
+</urlset>
