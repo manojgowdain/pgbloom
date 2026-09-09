@@ -175,7 +175,7 @@
     {
       "title": "Interactive Playground",
       "url": "/aiagent/playground",
-      "description": "Controlled browser execution for browser-safe PGBloom APIs with measured traces; server-only APIs are blocked without a sandbox backend.",
+      "description": "Controlled browser execution for browser-safe PGBloom APIs with measured traces; server-only APIs use clearly labeled client-side demo simulations.",
       "type": "tool",
       "parent": "/aiagent/"
     }

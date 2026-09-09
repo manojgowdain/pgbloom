@@ -31,7 +31,7 @@ const documents = [
   ["deployment", "Deployment", "operations", "Production runtime, secrets, database, and Pages deployment."],
   ["troubleshooting", "Troubleshooting", "operations", "Common startup, runtime, database, and feature failures."],
   ["examples", "Examples", "examples", "Executable patterns using the actual exported API."],
-  ["playground", "Interactive Playground", "tool", "Controlled browser execution for browser-safe PGBloom APIs with measured traces; server-only APIs are blocked without a sandbox backend."],
+  ["playground", "Interactive Playground", "tool", "Controlled browser execution for browser-safe PGBloom APIs with measured traces; server-only APIs use clearly labeled client-side demo simulations."],
 ];
 
 const featureDetails = {

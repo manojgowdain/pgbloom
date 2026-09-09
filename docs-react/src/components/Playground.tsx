@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom'
 import './Playground.css'
 
 type Category = { name: string; functions: string[]; browserSafe?: boolean }
-type TraceStep = { name: string; detail: string; durationMs: number; status: 'success' | 'blocked' | 'error'; data?: unknown }
+type TraceStep = { name: string; detail: string; durationMs: number; status: 'success' | 'simulated' | 'error'; data?: unknown }
 
 const categories: Category[] = [
   { name: 'Bloom Filter', functions: ['BloomFilter.add', 'BloomFilter.has', 'BloomFilter.clear'], browserSafe: true },
@@ -55,7 +55,7 @@ export default function Playground() {
   const nextStep = useRef<(() => void) | null>(null)
   const [messages, setMessages] = useState<string[]>(['Select a browser-safe API to execute real PGBloom code.'])
 
-  const selectedDescription = descriptions[selected] ?? 'This API is server-only in the current static playground. It requires a controlled backend connected to PostgreSQL.'
+  const selectedDescription = descriptions[selected] ?? 'This API is server-only. The playground can show a client-side demo flow, but it does not connect to Node.js or PostgreSQL.'
   const indices = useMemo(() => {
     const [first, second] = hashPair(encodeValue(value))
     const count = filter.hashCount
@@ -69,7 +69,7 @@ export default function Playground() {
     setActiveStep(-1)
     setOutput(null)
     setError('')
-    setMessages([safeFunctions.has(name) ? 'Ready to execute the real browser-safe implementation.' : 'This function is discoverable but server-only; no database operation is simulated.'])
+    setMessages([safeFunctions.has(name) ? 'Ready to execute the real browser-safe implementation.' : 'Demo simulation selected. No server, database, SQL, or network call will run.'])
   }
 
   function reset() {
@@ -88,10 +88,37 @@ export default function Playground() {
     setTrace([])
     setActiveStep(-1)
     if (!safeFunctions.has(selected)) {
-      const blocked: TraceStep = { name: 'execution.blocked', detail: 'Server-only API. Configure a sandbox HTTP backend to execute PostgreSQL-backed operations.', durationMs: 0, status: 'blocked' }
-      setTrace([blocked])
-      setMessages(['I checked the allowlist.', 'This API requires Node.js and PostgreSQL.', 'No server-side operation was attempted.'])
-      setActiveStep(0)
+      const simulatedSteps: Array<[string, string]> = selected.startsWith('client.getCache')
+        ? [['function.call', 'Demo call received for client.getCache.'], ['cache.l1.get', 'Demo L1 cache lookup: MISS.'], ['cache.database', 'Demo PostgreSQL lookup: simulated result.'], ['function.return', 'Demo cache miss returned as null.']]
+        : selected.startsWith('client.setCache')
+          ? [['function.call', 'Demo call received for client.setCache.'], ['cache.serialize', 'Demo value serialization: simulated.'], ['postgres.query', 'Demo PostgreSQL write: simulated INSERT.'], ['cache.l1.set', 'Demo L1 cache population: simulated.'], ['function.return', 'Demo cache value returned.']]
+          : selected.startsWith('client.deleteCache')
+            ? [['function.call', 'Demo call received for client.deleteCache.'], ['cache.l1.delete', 'Demo L1 invalidation: simulated.'], ['postgres.query', 'Demo PostgreSQL delete: simulated DELETE.'], ['function.return', 'Demo delete completed.']]
+            : selected.startsWith('client.tryLock') || selected.startsWith('client.lock')
+              ? [['function.call', 'Demo lock request received.'], ['lock.acquire', 'Demo lock acquisition: simulated success.'], ['postgres.query', 'Demo lock row update: simulated.'], ['function.return', 'Demo critical section may proceed.']]
+              : selected.startsWith('client.unlock')
+                ? [['function.call', 'Demo unlock request received.'], ['lock.release', 'Demo lock release: simulated.'], ['postgres.query', 'Demo lock row deletion: simulated.'], ['function.return', 'Demo lock released.']]
+                : selected.startsWith('client.publish') || selected.startsWith('client.subscribe')
+                  ? [['function.call', 'Demo Pub/Sub operation received.'], ['pubsub.listen-notify', 'Demo PostgreSQL LISTEN/NOTIFY delivery: simulated.'], ['pubsub.subscriber', 'Demo subscriber delivery: simulated.'], ['function.return', 'Demo message flow completed.']]
+                  : selected.startsWith('client.enqueue') || selected.startsWith('client.dequeue')
+                    ? [['function.call', 'Demo queue operation received.'], ['queue.claim', 'Demo FOR UPDATE SKIP LOCKED claim: simulated.'], ['postgres.query', 'Demo queue row mutation: simulated.'], ['function.return', 'Demo job result returned.']]
+                    : selected.startsWith('client.model') || selected.startsWith('Model.')
+                      ? [['function.call', 'Demo CRUD operation received.'], ['model.validate', 'Demo schema validation: simulated success.'], ['postgres.transaction', 'Demo PostgreSQL transaction: simulated.'], ['database.rows', 'Demo table state changed: simulated.'], ['function.return', 'Demo model result returned.']]
+                      : [['function.call', `Demo call received for ${selected}.`], ['postgres.query', 'Demo PostgreSQL operation: simulated.'], ['function.return', 'Demo result returned.']]
+      const demoTrace: TraceStep[] = []
+      setMessages(['I received a server-side API selection.', 'This is a client-side demo simulation only.', 'No Node.js, PostgreSQL, SQL, credentials, or network call will run.'])
+      for (const [name, detail] of simulatedSteps) {
+        const started = performance.now()
+        setActiveStep(demoTrace.length)
+        setMessages((current) => [...current, `→ ${detail}`])
+        await new Promise<void>((resolve) => setTimeout(resolve, 180))
+        demoTrace.push({ name, detail, durationMs: performance.now() - started, status: 'simulated' })
+        setTrace([...demoTrace])
+        setMessages((current) => [...current, `◌ ${detail} (demo)`])
+      }
+      setOutput({ simulated: true, function: selected, result: 'demo-only', value })
+      setMessages((current) => [...current, '◌ Demo completed. No server-side operation was attempted.'])
+      setActiveStep(-1)
       setRunning(false)
       return
     }
@@ -175,7 +202,7 @@ export default function Playground() {
         <aside className="agent-panel"><div className="panel-heading"><span>🤖 PGBloom Agent</span><small>live explanation</small></div><div className="agent-messages">{messages.map((message, index) => <p key={`${message}-${index}`} className={message.startsWith('✓') ? 'success' : message.startsWith('✕') ? 'failure' : ''}>{message}</p>)}</div><div className="io-panel"><h2>Output</h2><pre>{JSON.stringify(output, null, 2) ?? 'null'}</pre>{error && <p className="error-box">{error}</p>}</div></aside>
       </div>
       <section className="telemetry-grid"><div className="telemetry-panel"><div className="panel-heading"><span>Execution timeline</span><small>performance.now()</small></div>{trace.length ? trace.map((step, index) => <div className="timeline-row" key={`${step.name}-${index}`}><time>{step.durationMs.toFixed(2)}ms</time><b>{step.name}</b><span>{step.detail}</span></div>) : <p className="empty-state">Measured steps appear here after Run.</p>}</div><div className="telemetry-panel"><div className="panel-heading"><span>Bloom state</span><small>real filter inspection</small></div><div className="bloom-stats"><span><b>{filter.size()}</b> items</span><span><b>{filter.bitCount}</b> counters</span><span><b>{filter.hashCount}</b> hashes</span></div><div className="bit-grid">{Array.from({ length: Math.min(filter.bitCount, 96) }, (_, index) => <span className={indices.includes(index) ? 'bit checked' : 'bit'} key={index}>{indices.includes(index) ? '●' : '○'}</span>)}</div><p className="hint">Highlighted positions are computed with PGBloom's real <code>hashPair</code> algorithm for <code>{value}</code>.</p></div></section>
-      <footer className="playground-footer"><span>Server-only APIs are never executed in this browser sandbox.</span><Link to="/aiagent/playground">AI-agent playground documentation</Link></footer>
+      <footer className="playground-footer"><span>Server-only APIs use client-side demo simulation only. No backend operation is executed.</span><Link to="/aiagent/playground">AI-agent playground documentation</Link></footer>
     </div>
   )
 }

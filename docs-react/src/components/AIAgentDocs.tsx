@@ -32,7 +32,7 @@ const documents: DocumentEntry[] = [
   ['deployment', 'Deployment', 'operations', 'Production runtime, secrets, database, and Pages deployment.'],
   ['troubleshooting', 'Troubleshooting', 'operations', 'Common startup, runtime, database, and feature failures.'],
   ['examples', 'Examples', 'examples', 'Executable patterns using the actual exported API.'],
-  ['playground', 'Interactive Playground', 'tool', 'Controlled browser execution for browser-safe PGBloom APIs with measured traces.'],
+  ['playground', 'Interactive Playground', 'tool', 'Controlled browser execution for browser-safe PGBloom APIs with measured traces and client-side demo simulations.'],
 ].map(([slug, title, type, description]) => ({ slug, title, type, description }))
 
 const details: Record<string, { overview: string; api: string; example: string }> = {

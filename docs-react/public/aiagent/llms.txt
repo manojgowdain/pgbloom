@@ -26,4 +26,4 @@ Machine-readable index: /aiagent/index.json
 - Deployment: /aiagent/deployment - Production runtime, secrets, database, and Pages deployment.
 - Troubleshooting: /aiagent/troubleshooting - Common startup, runtime, database, and feature failures.
 - Examples: /aiagent/examples - Executable patterns using the actual exported API.
-- Interactive Playground: /aiagent/playground - Controlled browser execution for browser-safe PGBloom APIs with measured traces; server-only APIs are blocked without a sandbox backend.
+- Interactive Playground: /aiagent/playground - Controlled browser execution for browser-safe PGBloom APIs with measured traces; server-only APIs use clearly labeled client-side demo simulations.
