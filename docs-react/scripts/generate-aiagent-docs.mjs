@@ -82,15 +82,15 @@ const rootBody = `<p>PGBloom is a PostgreSQL-first infrastructure toolkit for Ja
 const index = { project: "PGBloom", documentation: "/aiagent/", version, description: "AI-readable documentation for the PostgreSQL-first PGBloom toolkit.", sourceOfTruth: ["src/index.ts", "src/server.ts", "src/browser.ts", "src/client/PGSnap.ts", "test/"], documents: documents.map(([slug, title, type, description]) => ({ title, url: `/aiagent/${slug === "api" ? "api/" : slug}`, description, type, parent: "/aiagent/" })) };
 const publicRoot = join(root, "..", "public");
 const sitemapRoutes = [
-  ["/", "weekly", "1.0"],
-  ["/playground", "weekly", "0.9"],
-  ["/aiagent/", "monthly", "0.9"],
-  ...documents.map(([slug, , type]) => [`/aiagent/${slug === "api" ? "api/" : slug}`, type === "feature" || type === "tool" ? "monthly" : "yearly", type === "overview" || type === "api" || type === "tool" ? "0.9" : "0.7"]),
-  ["/aiagent/index.json", "monthly", "0.4"],
-  ["/aiagent/llms.txt", "monthly", "0.4"],
-  ["/aiagent/llms-full.txt", "monthly", "0.4"],
+  "/",
+  "/playground",
+  "/aiagent/",
+  ...documents.map(([slug]) => `/aiagent/${slug === "api" ? "api/" : slug}`),
+  "/aiagent/index.json",
+  "/aiagent/llms.txt",
+  "/aiagent/llms-full.txt",
 ];
-const sitemap = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${sitemapRoutes.map(([url, changefreq, priority]) => `  <url><loc>${site}${url}</loc><changefreq>${changefreq}</changefreq><priority>${priority}</priority></url>`).join("\n")}\n</urlset>\n`;
+const sitemap = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${sitemapRoutes.map((url) => `  <url><loc>${site}${url}</loc></url>`).join("\n")}\n</urlset>\n`;
 await mkdir(output, { recursive: true });
 await writeFile(join(output, "index.json"), `${JSON.stringify(index, null, 2)}\n`);
 await writeFile(join(output, "index.html"), page("", "AI Agent Documentation", "index", "AI-readable documentation for the PGBloom PostgreSQL-first infrastructure toolkit.", rootBody));
