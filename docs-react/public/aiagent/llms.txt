@@ -1,0 +1,29 @@
+# PGBloom
+
+Canonical AI-agent documentation: /aiagent/
+Machine-readable index: /aiagent/index.json
+
+- Overview: /aiagent/overview - Project purpose, runtime model, and actual feature inventory.
+- Installation: /aiagent/installation - Package installation, PostgreSQL requirements, and runtime support.
+- Quickstart: /aiagent/quickstart - Minimal server setup and first operations.
+- Architecture: /aiagent/architecture - Client, PostgreSQL, local storage, browser boundaries, and lifecycle.
+- Configuration: /aiagent/configuration - PgbloomOptions and subsystem defaults.
+- API Inventory: /aiagent/api/ - Public package exports and high-level client methods.
+- Cache: /aiagent/cache - TTL cache operations and optional Bloom lookup optimization.
+- Pub/Sub: /aiagent/pubsub - PostgreSQL LISTEN/NOTIFY channel messaging.
+- Queue: /aiagent/queue - Priority jobs, visibility timeouts, retries, and claims.
+- Locks: /aiagent/locks - TTL distributed locks and leader election.
+- Scheduler: /aiagent/scheduler - Delayed and recurring jobs with worker claims.
+- Rate Limiting: /aiagent/rate-limit - Fixed-window, sliding-window, and token-bucket limits.
+- Events: /aiagent/events - Persistent events, notifications, history, and replay.
+- Counters: /aiagent/counters - Atomic counters and strong, local, or eventual reads.
+- Model / CRUD: /aiagent/model - Schema-driven PostgreSQL CRUD models.
+- Authentication: /aiagent/auth - Passwords, JWTs, sessions, and OTP workflows.
+- Bloom Filter: /aiagent/bloom-filter - Runtime-independent counting Bloom filter and hash helpers.
+- Storage: /aiagent/storage - SSDiskDB local persistence and in-memory LRU/TTL caching.
+- Browser: /aiagent/browser - Browser-safe entrypoint and server boundary.
+- Testing: /aiagent/testing - Unit, integration, package, persistence, and documentation checks.
+- Deployment: /aiagent/deployment - Production runtime, secrets, database, and Pages deployment.
+- Troubleshooting: /aiagent/troubleshooting - Common startup, runtime, database, and feature failures.
+- Examples: /aiagent/examples - Executable patterns using the actual exported API.
+- Interactive Playground: /aiagent/playground - Controlled browser execution for browser-safe PGBloom APIs with measured traces; server-only APIs are blocked without a sandbox backend.

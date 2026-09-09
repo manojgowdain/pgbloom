@@ -1,0 +1,121 @@
+# PGBloom AI Agent Documentation
+
+## Overview
+- URL: /aiagent/overview
+- Category: overview
+- Summary: Project purpose, runtime model, and actual feature inventory.
+
+## Installation
+- URL: /aiagent/installation
+- Category: setup
+- Summary: Package installation, PostgreSQL requirements, and runtime support.
+
+## Quickstart
+- URL: /aiagent/quickstart
+- Category: guide
+- Summary: Minimal server setup and first operations.
+
+## Architecture
+- URL: /aiagent/architecture
+- Category: architecture
+- Summary: Client, PostgreSQL, local storage, browser boundaries, and lifecycle.
+
+## Configuration
+- URL: /aiagent/configuration
+- Category: configuration
+- Summary: PgbloomOptions and subsystem defaults.
+
+## API Inventory
+- URL: /aiagent/api/
+- Category: api
+- Summary: Public package exports and high-level client methods.
+
+## Cache
+- URL: /aiagent/cache
+- Category: feature
+- Summary: TTL cache operations and optional Bloom lookup optimization.
+
+## Pub/Sub
+- URL: /aiagent/pubsub
+- Category: feature
+- Summary: PostgreSQL LISTEN/NOTIFY channel messaging.
+
+## Queue
+- URL: /aiagent/queue
+- Category: feature
+- Summary: Priority jobs, visibility timeouts, retries, and claims.
+
+## Locks
+- URL: /aiagent/locks
+- Category: feature
+- Summary: TTL distributed locks and leader election.
+
+## Scheduler
+- URL: /aiagent/scheduler
+- Category: feature
+- Summary: Delayed and recurring jobs with worker claims.
+
+## Rate Limiting
+- URL: /aiagent/rate-limit
+- Category: feature
+- Summary: Fixed-window, sliding-window, and token-bucket limits.
+
+## Events
+- URL: /aiagent/events
+- Category: feature
+- Summary: Persistent events, notifications, history, and replay.
+
+## Counters
+- URL: /aiagent/counters
+- Category: feature
+- Summary: Atomic counters and strong, local, or eventual reads.
+
+## Model / CRUD
+- URL: /aiagent/model
+- Category: feature
+- Summary: Schema-driven PostgreSQL CRUD models.
+
+## Authentication
+- URL: /aiagent/auth
+- Category: feature
+- Summary: Passwords, JWTs, sessions, and OTP workflows.
+
+## Bloom Filter
+- URL: /aiagent/bloom-filter
+- Category: feature
+- Summary: Runtime-independent counting Bloom filter and hash helpers.
+
+## Storage
+- URL: /aiagent/storage
+- Category: feature
+- Summary: SSDiskDB local persistence and in-memory LRU/TTL caching.
+
+## Browser
+- URL: /aiagent/browser
+- Category: feature
+- Summary: Browser-safe entrypoint and server boundary.
+
+## Testing
+- URL: /aiagent/testing
+- Category: operations
+- Summary: Unit, integration, package, persistence, and documentation checks.
+
+## Deployment
+- URL: /aiagent/deployment
+- Category: operations
+- Summary: Production runtime, secrets, database, and Pages deployment.
+
+## Troubleshooting
+- URL: /aiagent/troubleshooting
+- Category: operations
+- Summary: Common startup, runtime, database, and feature failures.
+
+## Examples
+- URL: /aiagent/examples
+- Category: examples
+- Summary: Executable patterns using the actual exported API.
+
+## Interactive Playground
+- URL: /aiagent/playground
+- Category: tool
+- Summary: Controlled browser execution for browser-safe PGBloom APIs with measured traces; server-only APIs are blocked without a sandbox backend.

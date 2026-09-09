@@ -1,0 +1,183 @@
+{
+  "project": "PGBloom",
+  "documentation": "/aiagent/",
+  "version": "1.6.0",
+  "description": "AI-readable documentation for the PostgreSQL-first PGBloom toolkit.",
+  "sourceOfTruth": [
+    "src/index.ts",
+    "src/server.ts",
+    "src/browser.ts",
+    "src/client/PGSnap.ts",
+    "test/"
+  ],
+  "documents": [
+    {
+      "title": "Overview",
+      "url": "/aiagent/overview",
+      "description": "Project purpose, runtime model, and actual feature inventory.",
+      "type": "overview",
+      "parent": "/aiagent/"
+    },
+    {
+      "title": "Installation",
+      "url": "/aiagent/installation",
+      "description": "Package installation, PostgreSQL requirements, and runtime support.",
+      "type": "setup",
+      "parent": "/aiagent/"
+    },
+    {
+      "title": "Quickstart",
+      "url": "/aiagent/quickstart",
+      "description": "Minimal server setup and first operations.",
+      "type": "guide",
+      "parent": "/aiagent/"
+    },
+    {
+      "title": "Architecture",
+      "url": "/aiagent/architecture",
+      "description": "Client, PostgreSQL, local storage, browser boundaries, and lifecycle.",
+      "type": "architecture",
+      "parent": "/aiagent/"
+    },
+    {
+      "title": "Configuration",
+      "url": "/aiagent/configuration",
+      "description": "PgbloomOptions and subsystem defaults.",
+      "type": "configuration",
+      "parent": "/aiagent/"
+    },
+    {
+      "title": "API Inventory",
+      "url": "/aiagent/api/",
+      "description": "Public package exports and high-level client methods.",
+      "type": "api",
+      "parent": "/aiagent/"
+    },
+    {
+      "title": "Cache",
+      "url": "/aiagent/cache",
+      "description": "TTL cache operations and optional Bloom lookup optimization.",
+      "type": "feature",
+      "parent": "/aiagent/"
+    },
+    {
+      "title": "Pub/Sub",
+      "url": "/aiagent/pubsub",
+      "description": "PostgreSQL LISTEN/NOTIFY channel messaging.",
+      "type": "feature",
+      "parent": "/aiagent/"
+    },
+    {
+      "title": "Queue",
+      "url": "/aiagent/queue",
+      "description": "Priority jobs, visibility timeouts, retries, and claims.",
+      "type": "feature",
+      "parent": "/aiagent/"
+    },
+    {
+      "title": "Locks",
+      "url": "/aiagent/locks",
+      "description": "TTL distributed locks and leader election.",
+      "type": "feature",
+      "parent": "/aiagent/"
+    },
+    {
+      "title": "Scheduler",
+      "url": "/aiagent/scheduler",
+      "description": "Delayed and recurring jobs with worker claims.",
+      "type": "feature",
+      "parent": "/aiagent/"
+    },
+    {
+      "title": "Rate Limiting",
+      "url": "/aiagent/rate-limit",
+      "description": "Fixed-window, sliding-window, and token-bucket limits.",
+      "type": "feature",
+      "parent": "/aiagent/"
+    },
+    {
+      "title": "Events",
+      "url": "/aiagent/events",
+      "description": "Persistent events, notifications, history, and replay.",
+      "type": "feature",
+      "parent": "/aiagent/"
+    },
+    {
+      "title": "Counters",
+      "url": "/aiagent/counters",
+      "description": "Atomic counters and strong, local, or eventual reads.",
+      "type": "feature",
+      "parent": "/aiagent/"
+    },
+    {
+      "title": "Model / CRUD",
+      "url": "/aiagent/model",
+      "description": "Schema-driven PostgreSQL CRUD models.",
+      "type": "feature",
+      "parent": "/aiagent/"
+    },
+    {
+      "title": "Authentication",
+      "url": "/aiagent/auth",
+      "description": "Passwords, JWTs, sessions, and OTP workflows.",
+      "type": "feature",
+      "parent": "/aiagent/"
+    },
+    {
+      "title": "Bloom Filter",
+      "url": "/aiagent/bloom-filter",
+      "description": "Runtime-independent counting Bloom filter and hash helpers.",
+      "type": "feature",
+      "parent": "/aiagent/"
+    },
+    {
+      "title": "Storage",
+      "url": "/aiagent/storage",
+      "description": "SSDiskDB local persistence and in-memory LRU/TTL caching.",
+      "type": "feature",
+      "parent": "/aiagent/"
+    },
+    {
+      "title": "Browser",
+      "url": "/aiagent/browser",
+      "description": "Browser-safe entrypoint and server boundary.",
+      "type": "feature",
+      "parent": "/aiagent/"
+    },
+    {
+      "title": "Testing",
+      "url": "/aiagent/testing",
+      "description": "Unit, integration, package, persistence, and documentation checks.",
+      "type": "operations",
+      "parent": "/aiagent/"
+    },
+    {
+      "title": "Deployment",
+      "url": "/aiagent/deployment",
+      "description": "Production runtime, secrets, database, and Pages deployment.",
+      "type": "operations",
+      "parent": "/aiagent/"
+    },
+    {
+      "title": "Troubleshooting",
+      "url": "/aiagent/troubleshooting",
+      "description": "Common startup, runtime, database, and feature failures.",
+      "type": "operations",
+      "parent": "/aiagent/"
+    },
+    {
+      "title": "Examples",
+      "url": "/aiagent/examples",
+      "description": "Executable patterns using the actual exported API.",
+      "type": "examples",
+      "parent": "/aiagent/"
+    },
+    {
+      "title": "Interactive Playground",
+      "url": "/aiagent/playground",
+      "description": "Controlled browser execution for browser-safe PGBloom APIs with measured traces; server-only APIs are blocked without a sandbox backend.",
+      "type": "tool",
+      "parent": "/aiagent/"
+    }
+  ]
+}

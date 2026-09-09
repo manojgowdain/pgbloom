@@ -16,14 +16,17 @@ jobs:
 
       - name: Validate HTML entry point
         run: |
-          test -f docs/index.html
-          echo "✓ docs/index.html exists"
+          test -f docs-react/public/aiagent/index.html
+          echo "✓ AI-agent documentation entry point exists"
+
+      - name: Validate AI-agent documentation tree
+        run: npm run test:docs
 
       - name: Check for broken internal asset references
         run: |
-          if [ -f docs/index.html ]; then
-            grep -oE 'href="[^"]*"' docs/index.html | sed 's/href="//;s/"//' | grep -v '^https://' | grep -v '^#' | while read -r href; do
-              if [ -n "$href" ] && [ ! -f "docs/${href#/}" ] && [ ! -f "docs/${href}" ]; then
+          if [ -f docs-react/public/aiagent/index.html ]; then
+            grep -oE 'href="[^"]*"' docs-react/public/aiagent/index.html | sed 's/href="//;s/"//' | grep -v '^https://' | grep -v '^#' | while read -r href; do
+              if [ -n "$href" ] && [[ "$href" == /aiagent/* ]] && [ ! -f "docs-react/public${href}/index.html" ] && [ ! -f "docs-react/public${href}" ]; then
                 echo "⚠ Warning: Referenced file not found: $href"
               fi
             done
@@ -32,22 +35,21 @@ jobs:
 
       - name: Validate basic HTML structure
         run: |
-          if [ -f docs/index.html ]; then
-            head -1 docs/index.html | grep -q '<!DOCTYPE html>'
+          if [ -f docs-react/public/aiagent/index.html ]; then
+            head -1 docs-react/public/aiagent/index.html | grep -q '<!doctype html>'
             echo "✓ Valid DOCTYPE"
-            grep -q '<html' docs/index.html
+            grep -q '<html' docs-react/public/aiagent/index.html
             echo "✓ HTML tag present"
-            grep -q '<head>' docs/index.html
+            grep -q '<head>' docs-react/public/aiagent/index.html
             echo "✓ Head section present"
-            grep -q '<body' docs/index.html
+            grep -q '<body' docs-react/public/aiagent/index.html
             echo "✓ Body section present"
           fi
 
       - name: Check for common issues
         run: |
-          if [ -f docs/index.html ]; then
-            # Check for inline scripts that might reference non-existent elements
-            grep -n 'document\.getElementById' docs/index.html | while IFS=: read -r line content; do
+          if [ -f docs-react/public/aiagent/index.html ]; then
+            grep -n 'document\.getElementById' docs-react/public/aiagent/index.html | while IFS=: read -r line content; do
               echo "  Line $line: $content"
             done
             echo "✓ Basic JS reference check complete"

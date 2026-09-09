@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { Link } from 'react-router-dom'
 import './Docs.css'
 
 const sections = [
@@ -30,16 +31,18 @@ export default function Docs() {
   return (
     <div className="docs-layout">
       <nav className="navbar" id="navbar">
-        <a href="#" className="nav-brand">
+          <Link to="/" className="nav-brand">
           <svg viewBox="0 0 28 28" fill="none" width="28" height="28">
             <rect width="28" height="28" rx="6" fill="#6366f1"/>
             <path d="M8 9h12M8 14h8M8 19h10" stroke="white" strokeWidth="2" strokeLinecap="round"/>
           </svg>
           PGBloom
-        </a>
+          </Link>
         <div className="nav-links">
-          <a href="#quick-start">Quick Start</a>
-          <a href="#features">Features</a>
+          <Link to={{ pathname: '/', hash: '#quick-start' }}>Quick Start</Link>
+          <Link to={{ pathname: '/', hash: '#features' }}>Features</Link>
+          <Link to="/aiagent/">AI Docs</Link>
+          <Link to="/playground">Playground</Link>
           <a href="https://jsr.io/@manojgowdain/pgbloom" target="_blank" rel="noopener" className="btn-nav">JSR</a>
         </div>
         <button className="mobile-menu-btn" onClick={() => setMobileOpen(!mobileOpen)} aria-label="Toggle menu">
@@ -55,25 +58,25 @@ export default function Docs() {
         <div className="sidebar-section">
           <div className="sidebar-label">Getting Started</div>
           {sections.slice(0, 4).map(s => (
-            <a key={s.id} href={`#${s.id}`} onClick={() => setMobileOpen(false)}>{s.label}</a>
+            <Link key={s.id} to={{ pathname: '/', hash: `#${s.id}` }} onClick={() => setMobileOpen(false)}>{s.label}</Link>
           ))}
         </div>
         <div className="sidebar-section">
           <div className="sidebar-label">Configuration</div>
           {sections.slice(4, 5).map(s => (
-            <a key={s.id} href={`#${s.id}`} onClick={() => setMobileOpen(false)}>{s.label}</a>
+            <Link key={s.id} to={{ pathname: '/', hash: `#${s.id}` }} onClick={() => setMobileOpen(false)}>{s.label}</Link>
           ))}
         </div>
         <div className="sidebar-section">
           <div className="sidebar-label">APIs</div>
           {sections.slice(5, 14).map(s => (
-            <a key={s.id} href={`#${s.id}`} onClick={() => setMobileOpen(false)}>{s.label}</a>
+            <Link key={s.id} to={{ pathname: '/', hash: `#${s.id}` }} onClick={() => setMobileOpen(false)}>{s.label}</Link>
           ))}
         </div>
         <div className="sidebar-section">
           <div className="sidebar-label">Advanced</div>
           {sections.slice(14).map(s => (
-            <a key={s.id} href={`#${s.id}`} onClick={() => setMobileOpen(false)}>{s.label}</a>
+            <Link key={s.id} to={{ pathname: '/', hash: `#${s.id}` }} onClick={() => setMobileOpen(false)}>{s.label}</Link>
           ))}
         </div>
       </aside>
@@ -144,7 +147,7 @@ function SectionHero() {
         A lightweight PostgreSQL-backed Cache, Pub/Sub, Queue, Locks, Scheduler, Rate Limiting, Events, and Counters library for Node.js with built-in Bloom Filter optimization.
       </p>
       <div className="hero-actions">
-        <a href="#quick-start" className="btn btn-primary">Quick Start</a>
+        <Link to={{ pathname: '/', hash: '#quick-start' }} className="btn btn-primary">Quick Start</Link>
         <a href="https://jsr.io/@manojgowdain/pgbloom" target="_blank" rel="noopener" className="btn btn-secondary">View on JSR</a>
       </div>
       <div className="hero-chips">

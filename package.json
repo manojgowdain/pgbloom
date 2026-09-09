@@ -1,6 +1,6 @@
 {
   "name": "pgbloom",
-  "version": "1.6.0",
+  "version": "1.7.0",
   "description": "PGBloom is a PostgreSQL-first infrastructure toolkit for JavaScript and TypeScript providing caching, Pub/Sub, queues, distributed locks, leader election, scheduling, rate limiting, events, counters, Bloom filters, CRUD models, authentication, and OTP.",
   "license": "MIT",
   "type": "module",
@@ -53,6 +53,7 @@
     "test:persistence": "node test/persistence-smoke.mjs",
     "test:docker": "node scripts/run-postgres-tests.mjs",
     "test:integration:load": "node test/load/load.test.js",
+    "test:docs": "node scripts/validate-aiagent-docs.mjs",
     "prepare": "npm run build",
     "prepublishOnly": "npm run build"
   },

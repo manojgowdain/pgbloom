@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>PGBloom Overview</title>
+    <meta name="description" content="Overview of PGBloom, its purpose, architecture, and source-of-truth contract." />
+    <link rel="canonical" href="https://pgbloom.iotkit.in/aiagent/overview" />
+  </head>
+  <body>
+    <nav><a href="/aiagent/">AI index</a> | <a href="/aiagent/installation">Installation</a> | <a href="/aiagent/quickstart">Quickstart</a> | <a href="/aiagent/api/">API</a></nav>
+    <h1>PGBloom Overview</h1>
+    <p>PGBloom is a PostgreSQL-first infrastructure toolkit for JavaScript and TypeScript. The project stores its durable state in PostgreSQL and exposes high-level primitives for coordination, persistence, messaging, and model access.</p>
+
+    <h2>What it is</h2>
+    <ul>
+      <li>PostgreSQL-backed cache with optional Bloom-filter acceleration.</li>
+      <li>LISTEN/NOTIFY Pub/Sub and persistent event history.</li>
+      <li>Priority job queue with visibility timeouts and retries.</li>
+      <li>Distributed locks and leader election with TTL renewal.</li>
+      <li>Scheduler for delayed and recurring jobs.</li>
+      <li>Rate limiting using fixed-window, sliding-window, and token-bucket algorithms.</li>
+      <li>Atomic counters and event-driven integrations.</li>
+      <li>Schema-driven CRUD model layer.</li>
+      <li>Authentication, sessions, JWTs, and OTP flows.</li>
+      <li>Local SSDiskDB and in-memory LRU/TTL cache wrappers.</li>
+    </ul>
+
+    <h2>Why it exists</h2>
+    <p>PostgreSQL is already the durable system of record in many applications. PGBloom keeps coordination logic in the same database and avoids introducing Redis or a separate queue broker unless the app genuinely needs one.</p>
+
+    <h2>When to use it</h2>
+    <ul>
+      <li>Need a queue, lock, or scheduler backed by SQL transactions.</li>
+      <li>Want Redis-like features without extra infrastructure.</li>
+      <li>Need per-application state with PostgreSQL tables and notifications.</li>
+    </ul>
+
+    <h2>When not to use it</h2>
+    <ul>
+      <li>Need a full React integration library; this project does not ship React hooks or providers.</li>
+      <li>Need a browser-only database client; use the server runtime and HTTP/RPC for database-backed features.</li>
+      <li>Need a general-purpose distributed event bus with heavy stream semantics beyond this project’s table-based design.</li>
+    </ul>
+
+    <h2>Architecture</h2>
+    <p>Application → PGBloom client → PostgreSQL. Optional local path: MemoryCache → SSDiskStore → local disk. Browser code uses the browser entry and calls backend services over HTTP/RPC.</p>
+
+    <h2>Public API</h2>
+    <p>The primary public entry is <code>createPgbloom()</code>, exported from <code>src/index.ts</code> and <code>src/server.ts</code>. The library also exports runtime-safe browser utilities from the <code>pgbloom/browser</code> entrypoint.</p>
+
+    <h2>Related docs</h2>
+    <ul>
+      <li><a href="/aiagent/architecture">Architecture</a></li>
+      <li><a href="/aiagent/configuration">Configuration</a></li>
+      <li><a href="/aiagent/api/">API inventory</a></li>
+      <li><a href="/aiagent/testing">Testing</a></li>
+    </ul>
+  </body>
+</html>

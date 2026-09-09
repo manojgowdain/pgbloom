@@ -166,6 +166,7 @@ Keep database credentials and JWT secrets server-side, use TLS and least-privile
 
 ## Documentation
 
+- [AI Agent Documentation](https://pgbloom.iotkit.in/aiagent/): start here to crawl the complete machine-readable documentation tree
 - [Complete API reference](docs/API.md)
 - [React documentation site setup](docs-react/README.md)
 - [Interactive React documentation source](docs-react/src/components/Docs.tsx)

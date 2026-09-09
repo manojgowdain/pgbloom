@@ -2,6 +2,8 @@
 
 This reference is derived from the TypeScript source and package entrypoints. The package is a server-side PostgreSQL toolkit; the React project in `docs-react/` is the documentation website, not a React integration package.
 
+For a crawlable documentation graph, start at [AI Agent Documentation](https://pgbloom.iotkit.in/aiagent/). It links the runtime, feature, API, testing, deployment, and troubleshooting documents.
+
 ## Entry points
 
 ```ts
