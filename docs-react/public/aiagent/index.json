@@ -1,7 +1,7 @@
 {
   "project": "PGBloom",
   "documentation": "/aiagent/",
-  "version": "1.6.0",
+  "version": "1.7.0",
   "description": "AI-readable documentation for the PostgreSQL-first PGBloom toolkit.",
   "sourceOfTruth": [
     "src/index.ts",
@@ -175,7 +175,7 @@
     {
       "title": "Interactive Playground",
       "url": "/aiagent/playground",
-      "description": "Controlled browser execution for browser-safe PGBloom APIs with measured traces; server-only APIs use clearly labeled client-side demo simulations.",
+      "description": "Controlled browser execution for browser-safe PGBloom APIs with measured traces.",
       "type": "tool",
       "parent": "/aiagent/"
     }

@@ -2,13 +2,192 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/x-icon" href="%BASE_URL%favicon.ico" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="PGBloom — PostgreSQL-first infrastructure toolkit for JavaScript and TypeScript" />
-    <title>PGBloom — PostgreSQL Infrastructure for Developers</title>
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <link rel="apple-touch-icon" href="/favicon.ico" />
+
+    <!-- Primary SEO -->
+    <title>PGBloom — PostgreSQL-First Infrastructure Toolkit for JavaScript &amp; TypeScript</title>
+    <meta
+      name="description"
+      content="PGBloom is a PostgreSQL-first infrastructure toolkit for JavaScript and TypeScript. Replace Redis, RabbitMQ and cron with Postgres: cache, pub/sub, job queues, distributed locks, scheduler, rate limiting, counters, bloom filters, auth and storage. Works in Node.js, Deno, Bun and the browser."
+    />
+    <meta
+      name="keywords"
+      content="pgbloom, postgresql, postgres, postgres toolkit, postgresql infrastructure, postgres cache, postgres pubsub, postgres queue, postgres job queue, postgres distributed locks, postgres scheduler, postgres rate limiting, postgres counters, bloom filter, postgres bloom filter, redis alternative, redis replacement, rabbitmq alternative, javascript, typescript, nodejs, deno, bun, npm package, jsr package, orm, postgres events, LISTEN NOTIFY, postgres auth, postgres storage, backend toolkit, developer tools, open source, Manoj Gowda, manojgowda.in, iotkit"
+    />
+    <meta name="author" content="Manoj Gowda" />
+    <meta name="creator" content="Manoj Gowda" />
+    <meta name="publisher" content="Manoj Gowda" />
+    <link rel="author" href="https://manojgowda.in" />
+    <link rel="me" href="https://manojgowda.in" />
+    <link rel="me" href="https://manojgowda.iotkit.in" />
+    <link rel="me" href="https://github.com/manojgowdain" />
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+    <meta name="googlebot" content="index, follow" />
+    <meta name="theme-color" content="#336791" />
+    <meta name="application-name" content="PGBloom" />
+    <meta name="apple-mobile-web-app-title" content="PGBloom" />
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="language" content="English" />
+    <meta name="rating" content="general" />
+    <meta name="referrer" content="strict-origin-when-cross-origin" />
+
+    <!-- Canonical + discovery -->
+    <link rel="canonical" href="https://pgbloom.iotkit.in/" />
+    <link rel="sitemap" type="application/xml" title="Sitemap" href="https://pgbloom.iotkit.in/sitemap.xml" />
+    <link rel="alternate" type="text/plain" title="LLMs.txt" href="https://pgbloom.iotkit.in/aiagent/llms.txt" />
+    <link rel="alternate" type="text/plain" title="LLMs full" href="https://pgbloom.iotkit.in/aiagent/llms-full.txt" />
+    <link rel="alternate" type="application/json" title="Docs index" href="https://pgbloom.iotkit.in/aiagent/index.json" />
+    <link rel="alternate" hreflang="en" href="https://pgbloom.iotkit.in/" />
+    <link rel="alternate" hreflang="x-default" href="https://pgbloom.iotkit.in/" />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="PGBloom" />
+    <meta property="og:locale" content="en_US" />
+    <meta property="og:url" content="https://pgbloom.iotkit.in/" />
+    <meta property="og:title" content="PGBloom — PostgreSQL-First Infrastructure for JavaScript &amp; TypeScript" />
+    <meta
+      property="og:description"
+      content="Cache, pub/sub, queues, locks, scheduler, rate limiting, counters, bloom filters, auth and storage — all on PostgreSQL. One toolkit for Node.js, Deno, Bun and the browser."
+    />
+    <meta property="og:image" content="https://pgbloom.iotkit.in/og-image.png" />
+    <meta property="og:image:alt" content="PGBloom — PostgreSQL infrastructure toolkit" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+
+    <!-- Twitter / X -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="PGBloom — PostgreSQL-First Infrastructure Toolkit" />
+    <meta
+      name="twitter:description"
+      content="Replace Redis, RabbitMQ and cron with PostgreSQL. Cache, pub/sub, queues, locks, scheduler and more for JS/TS."
+    />
+    <meta name="twitter:image" content="https://pgbloom.iotkit.in/og-image.png" />
+    <meta name="twitter:image:alt" content="PGBloom — PostgreSQL infrastructure toolkit" />
+    <meta name="twitter:url" content="https://pgbloom.iotkit.in/" />
+
+    <!-- Performance hints -->
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
+    <link rel="dns-prefetch" href="https://cdn.jsdelivr.net" />
+    <link rel="dns-prefetch" href="https://www.npmjs.com" />
+    <link rel="dns-prefetch" href="https://github.com" />
+
+    <!-- Structured data: SoftwareSourceCode + SoftwareApplication -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "WebSite",
+            "@id": "https://pgbloom.iotkit.in/#website",
+            "url": "https://pgbloom.iotkit.in/",
+            "name": "PGBloom",
+            "description": "PostgreSQL-first infrastructure toolkit for JavaScript and TypeScript.",
+            "inLanguage": "en",
+            "publisher": { "@id": "https://manojgowda.in/#person" }
+          },
+          {
+            "@type": "Person",
+            "@id": "https://manojgowda.in/#person",
+            "name": "Manoj Gowda",
+            "url": "https://manojgowda.in",
+            "jobTitle": "Full Stack Developer",
+            "sameAs": [
+              "https://manojgowda.in",
+              "https://manojgowda.in/skills",
+              "https://manojgowda.iotkit.in",
+              "https://github.com/manojgowdain"
+            ]
+          },
+          {
+            "@type": ["SoftwareApplication", "SoftwareSourceCode"],
+            "@id": "https://pgbloom.iotkit.in/#software",
+            "name": "PGBloom",
+            "alternateName": ["pgbloom", "PG Bloom"],
+            "description": "PostgreSQL-first infrastructure toolkit providing cache, pub/sub, queues, distributed locks, scheduler, rate limiting, counters, bloom filters, auth and storage for JavaScript and TypeScript.",
+            "url": "https://pgbloom.iotkit.in/",
+            "applicationCategory": "DeveloperApplication",
+            "applicationSubCategory": "Database Toolkit",
+            "operatingSystem": "Cross-platform",
+            "programmingLanguage": ["JavaScript", "TypeScript"],
+            "runtimePlatform": ["Node.js", "Deno", "Bun", "Browser"],
+            "softwareVersion": "1.7.0",
+            "license": "https://opensource.org/licenses/MIT",
+            "isAccessibleForFree": true,
+            "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+            "codeRepository": "https://github.com/manojgowdain/pgbloom",
+            "downloadUrl": "https://www.npmjs.com/package/pgbloom",
+            "installUrl": "https://www.npmjs.com/package/pgbloom",
+            "documentation": "https://github.com/manojgowdain/pgbloom/blob/main/docs/API.md",
+            "author": { "@id": "https://manojgowda.in/#person" },
+            "creator": { "@id": "https://manojgowda.in/#person" },
+            "keywords": "postgresql, postgres, cache, pubsub, queue, locks, scheduler, rate limit, counters, bloom filter, redis alternative, javascript, typescript, nodejs, deno, bun",
+            "sameAs": [
+              "https://www.npmjs.com/package/pgbloom",
+              "https://jsr.io/@manojgowdain/pgbloom",
+              "https://github.com/manojgowdain/pgbloom",
+              "https://www.jsdelivr.com/package/npm/pgbloom",
+              "https://manojgowda.iotkit.in/projects/pgbloom",
+              "https://manojgowda.iotkit.in/blog/building-postgresql-first-javascript-tools-with-pgbloom"
+            ]
+          },
+          {
+            "@type": "BreadcrumbList",
+            "itemListElement": [
+              { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://pgbloom.iotkit.in/" },
+              { "@type": "ListItem", "position": 2, "name": "Docs", "item": "https://pgbloom.iotkit.in/aiagent/" },
+              { "@type": "ListItem", "position": 3, "name": "Playground", "item": "https://pgbloom.iotkit.in/playground" }
+            ]
+          }
+        ]
+      }
+    </script>
   </head>
+
   <body>
     <div id="root"></div>
+
+    <!-- Crawler / no-JS fallback content (React replaces #root on load) -->
+    <noscript>
+      <main style="max-width:760px;margin:2rem auto;padding:0 1rem;font-family:system-ui,sans-serif;line-height:1.6">
+        <h1>PGBloom — PostgreSQL-First Infrastructure for JavaScript &amp; TypeScript</h1>
+        <p>
+          PGBloom turns PostgreSQL into your cache, pub/sub bus, job queue, distributed lock manager, scheduler,
+          rate limiter, counter store and bloom filter. Works in Node.js, Deno, Bun and the browser.
+        </p>
+        <nav aria-label="Links">
+          <ul>
+            <li><a href="https://pgbloom.iotkit.in/aiagent/overview">Documentation</a></li>
+            <li><a href="https://pgbloom.iotkit.in/aiagent/installation">Installation</a></li>
+            <li><a href="https://pgbloom.iotkit.in/aiagent/quickstart">Quickstart</a></li>
+            <li><a href="https://pgbloom.iotkit.in/playground">Playground</a></li>
+            <li><a href="https://github.com/manojgowdain/pgbloom">GitHub</a></li>
+            <li><a href="https://www.npmjs.com/package/pgbloom">npm</a></li>
+            <li><a href="https://jsr.io/@manojgowdain/pgbloom">JSR</a></li>
+            <li><a href="https://github.com/manojgowdain/pgbloom/blob/main/docs/API.md">API reference</a></li>
+            <li><a href="https://manojgowda.iotkit.in/blog/building-postgresql-first-javascript-tools-with-pgbloom">Blog post</a></li>
+          </ul>
+        </nav>
+        <p>
+          By <a href="https://manojgowda.in">Manoj Gowda</a> ·
+          <a href="https://manojgowda.iotkit.in/projects/pgbloom">Project page</a> ·
+          <a href="https://manojgowda.in/skills">Skills</a>
+        </p>
+        <p>
+          More from the same developer:
+          <a href="http://toonkit.js.org/">ToonKit</a>,
+          <a href="https://ssdiskdb.js.org/">SSDiskDB</a>.
+        </p>
+        <p>Please enable JavaScript to use the interactive docs and playground.</p>
+      </main>
+    </noscript>
+
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

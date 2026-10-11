@@ -27,6 +27,37 @@
   <url><loc>https://pgbloom.iotkit.in/aiagent/troubleshooting</loc></url>
   <url><loc>https://pgbloom.iotkit.in/aiagent/examples</loc></url>
   <url><loc>https://pgbloom.iotkit.in/aiagent/playground</loc></url>
+  <url><loc>https://pgbloom.iotkit.in/pgbloom-js</loc></url>
+  <url><loc>https://pgbloom.iotkit.in/pgbloom-npm</loc></url>
+  <url><loc>https://pgbloom.iotkit.in/pgbloom-jsr</loc></url>
+  <url><loc>https://pgbloom.iotkit.in/pgbloom-iotkit</loc></url>
+  <url><loc>https://pgbloom.iotkit.in/pgbloom-installation</loc></url>
+  <url><loc>https://pgbloom.iotkit.in/pgbloom-documentation</loc></url>
+  <url><loc>https://pgbloom.iotkit.in/features/postgresql-cache</loc></url>
+  <url><loc>https://pgbloom.iotkit.in/features/cache-ttl</loc></url>
+  <url><loc>https://pgbloom.iotkit.in/features/cache-invalidation</loc></url>
+  <url><loc>https://pgbloom.iotkit.in/features/pubsub</loc></url>
+  <url><loc>https://pgbloom.iotkit.in/features/queue</loc></url>
+  <url><loc>https://pgbloom.iotkit.in/features/distributed-locks</loc></url>
+  <url><loc>https://pgbloom.iotkit.in/features/rate-limiting</loc></url>
+  <url><loc>https://pgbloom.iotkit.in/features/scheduler</loc></url>
+  <url><loc>https://pgbloom.iotkit.in/features/events</loc></url>
+  <url><loc>https://pgbloom.iotkit.in/features/counters</loc></url>
+  <url><loc>https://pgbloom.iotkit.in/features/bloom-filter</loc></url>
+  <url><loc>https://pgbloom.iotkit.in/features/storage</loc></url>
+  <url><loc>https://pgbloom.iotkit.in/features/browser</loc></url>
+  <url><loc>https://pgbloom.iotkit.in/features/model</loc></url>
+  <url><loc>https://pgbloom.iotkit.in/features/auth</loc></url>
+  <url><loc>https://pgbloom.iotkit.in/guides/postgresql-caching</loc></url>
+  <url><loc>https://pgbloom.iotkit.in/guides/postgresql-cache-nodejs</loc></url>
+  <url><loc>https://pgbloom.iotkit.in/guides/postgresql-cache-javascript</loc></url>
+  <url><loc>https://pgbloom.iotkit.in/guides/cache-invalidation-guide</loc></url>
+  <url><loc>https://pgbloom.iotkit.in/guides/postgresql-pubsub</loc></url>
+  <url><loc>https://pgbloom.iotkit.in/guides/postgresql-distributed-locking</loc></url>
+  <url><loc>https://pgbloom.iotkit.in/comparisons/pgbloom-vs-redis</loc></url>
+  <url><loc>https://pgbloom.iotkit.in/comparisons/postgresql-cache-vs-redis</loc></url>
+  <url><loc>https://pgbloom.iotkit.in/use-cases/backend-caching</loc></url>
+  <url><loc>https://pgbloom.iotkit.in/use-cases/nodejs-applications</loc></url>
   <url><loc>https://pgbloom.iotkit.in/aiagent/index.json</loc></url>
   <url><loc>https://pgbloom.iotkit.in/aiagent/llms.txt</loc></url>
   <url><loc>https://pgbloom.iotkit.in/aiagent/llms-full.txt</loc></url>

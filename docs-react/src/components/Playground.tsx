@@ -1,6 +1,7 @@
 import { useMemo, useRef, useState } from 'react'
 import { BloomFilter, encodeValue, hashPair, serialize, deserialize, validateKey } from '../../../src/browser.ts'
 import { Link } from 'react-router-dom'
+import { Seo } from './seo/Seo'
 import './Playground.css'
 
 type Category = { name: string; functions: string[]; browserSafe?: boolean }
@@ -188,6 +189,16 @@ export default function Playground() {
 
   return (
     <div className="playground">
+      <Seo
+        title="Interactive Playground — Browser-Safe PGBloom APIs"
+        description="Run real PGBloom counting Bloom filters, key validation, and serialization in the browser with live step traces and bit-grid telemetry."
+        keywords="pgbloom playground, interactive bloom filter, browser safe pgbloom, javascript bloom filter demo"
+        canonicalUrl="https://pgbloom.iotkit.in/playground"
+        breadcrumbs={[
+          { name: 'Home', url: '/' },
+          { name: 'Playground', url: '/playground' }
+        ]}
+      />
       <header className="playground-header">
         <div><Link to="/" className="playground-back">PGBloom docs</Link><h1>Interactive Playground</h1><p>Execute browser-safe PGBloom APIs and inspect measured execution traces.</p></div>
         <div className="playground-actions"><span className="status-pill"><span /> Browser sandbox</span><button onClick={reset}>Reset Playground</button></div>

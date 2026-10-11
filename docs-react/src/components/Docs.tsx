@@ -1,5 +1,7 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
+import { Seo } from './seo/Seo'
+import Footer from './Footer'
 import './Docs.css'
 
 const sections = [
@@ -30,6 +32,15 @@ export default function Docs() {
 
   return (
     <div className="docs-layout">
+      <Seo
+        title="PGBloom — PostgreSQL-First Infrastructure Toolkit for JavaScript & TypeScript"
+        description="PGBloom turns PostgreSQL into your cache, Pub/Sub, job queues, distributed locks, scheduler, rate limiting, counters, and Bloom filters for Node.js, Deno, Bun, and browser."
+        keywords="pgbloom, postgresql, postgres cache, postgres pubsub, postgres job queue, postgres distributed locks, redis alternative, nodejs postgres toolkit"
+        canonicalUrl="https://pgbloom.iotkit.in/"
+        breadcrumbs={[
+          { name: 'Home', url: '/' }
+        ]}
+      />
       <nav className="navbar" id="navbar">
           <Link to="/" className="nav-brand">
           <svg viewBox="0 0 28 28" fill="none" width="28" height="28">
@@ -595,19 +606,6 @@ function SectionPublishing() {
         npm and JSR versions are kept in sync. Publishing happens automatically on version tags via CI/CD with OIDC trusted publishing — no long-lived tokens.
       </p>
     </section>
-  )
-}
-
-function Footer() {
-  return (
-    <footer className="footer">
-      <div className="footer-links">
-        <a href="https://github.com/manojgowdain/pgbloom" target="_blank" rel="noopener">GitHub</a>
-        <a href="https://jsr.io/@manojgowdain/pgbloom" target="_blank" rel="noopener">JSR</a>
-        <a href="https://github.com/manojgowdain/pgbloom/issues" target="_blank" rel="noopener">Issues</a>
-      </div>
-      <p>&copy; 2026 PGBloom — MIT License</p>
-    </footer>
   )
 }
 

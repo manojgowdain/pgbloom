@@ -118,4 +118,4 @@
 ## Interactive Playground
 - URL: /aiagent/playground
 - Category: tool
-- Summary: Controlled browser execution for browser-safe PGBloom APIs with measured traces; server-only APIs use clearly labeled client-side demo simulations.
+- Summary: Controlled browser execution for browser-safe PGBloom APIs with measured traces.

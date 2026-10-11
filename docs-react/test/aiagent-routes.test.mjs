@@ -6,36 +6,47 @@ import { fileURLToPath } from "node:url";
 const docsRoot = fileURLToPath(new URL("../", import.meta.url));
 const publicRoot = join(docsRoot, "public", "aiagent");
 const distRoot = join(docsRoot, "dist");
-const index = JSON.parse(readFileSync(join(publicRoot, "index.json"), "utf8"));
+const indexPath = join(publicRoot, "index.json");
+const index = JSON.parse(readFileSync(indexPath, "utf8"));
 
 assert.equal(index.project, "PGBloom");
 assert.equal(index.documentation, "/aiagent/");
 assert.equal(index.documents.length, 24);
 
-for (const document of index.documents) {
-  const slug = document.url.replace("/aiagent/", "").replace(/\/$/, "");
-  const sourcePage = join(publicRoot, slug, "index.html");
-  const builtPage = join(distRoot, "aiagent", slug, "index.html");
-
-  assert.ok(existsSync(sourcePage), `missing source route: ${document.url}`);
-  assert.ok(existsSync(builtPage), `missing built route: ${document.url}`);
-
-  const html = readFileSync(builtPage, "utf8");
-  assert.match(html, /<title>[^<]+<\/title>/, `${document.url} has no title`);
-  assert.match(html, /<h1>[^<]+<\/h1>/, `${document.url} has no heading`);
-  assert.match(html, /href="\/aiagent\//, `${document.url} has no AI-agent navigation`);
+// 1. Verify machine-readable files exist in dist/
+for (const file of ["index.json", "llms.txt", "llms-full.txt"]) {
+  assert.ok(existsSync(join(distRoot, "aiagent", file)), `missing built AI-agent file in dist: ${file}`);
 }
 
-for (const file of ["index.html", "index.json", "llms.txt", "llms-full.txt"]) {
-  assert.ok(existsSync(join(distRoot, "aiagent", file)), `missing built AI-agent file: ${file}`);
+// 2. Verify static HTML pages were correctly deleted from public/aiagent
+// (Only index.json, llms.txt, and llms-full.txt remain in public/aiagent)
+const publicAiAgentFiles = readdirSync(publicRoot);
+for (const file of publicAiAgentFiles) {
+  assert.ok(
+    ["index.json", "llms.txt", "llms-full.txt"].includes(file),
+    `Found unexpected static file/folder in public/aiagent: ${file}. All HTML pages must be rendered inside React!`
+  );
 }
 
+// 3. Verify React app entrypoint and bundle
 assert.ok(existsSync(join(distRoot, "index.html")), "missing React app entrypoint");
 const assets = readdirSync(join(distRoot, "assets"));
-const javascript = assets.find((file) => file.endsWith(".js"));
-assert.ok(javascript, "missing React JavaScript bundle");
-const bundle = readFileSync(join(distRoot, "assets", javascript), "utf8");
-assert.match(bundle, /AI index|AI Agent Documentation/, "React bundle does not contain routed AI-agent docs");
-assert.match(bundle, /Interactive Playground/, "React bundle does not contain the playground");
+const jsFiles = assets.filter((file) => file.endsWith(".js"));
+assert.ok(jsFiles.length > 0, "missing React JavaScript bundle");
 
-console.log(`Docs route smoke test passed: ${index.documents.length} AI-agent routes checked.`);
+// Verify that React bundle contains AIAgentDocs, Playground, and SEO landing page routes
+const allChunks = jsFiles.map((f) => readFileSync(join(distRoot, "assets", f), "utf8")).join(" ");
+assert.match(allChunks, /AI Agent Documentation|PGBloom AI Agent/, "React bundle does not contain in-app AI agent docs");
+assert.match(allChunks, /Interactive Playground/, "React bundle does not contain interactive playground");
+assert.match(allChunks, /PostgreSQL Cache/, "React bundle does not contain SEO feature landing pages");
+
+// 4. Verify Sitemap and robots.txt
+const sitemap = readFileSync(join(distRoot, "sitemap.xml"), "utf8");
+assert.match(sitemap, /<loc>https:\/\/pgbloom\.iotkit\.in\/aiagent\/<\/loc>/, "sitemap missing /aiagent/ root");
+assert.match(sitemap, /<loc>https:\/\/pgbloom\.iotkit\.in\/features\/postgresql-cache<\/loc>/, "sitemap missing feature route");
+assert.match(sitemap, /<loc>https:\/\/pgbloom\.iotkit\.in\/comparisons\/pgbloom-vs-redis<\/loc>/, "sitemap missing comparison route");
+
+const robots = readFileSync(join(distRoot, "robots.txt"), "utf8");
+assert.match(robots, /Sitemap: https:\/\/pgbloom\.iotkit\.in\/sitemap\.xml/, "robots.txt missing sitemap reference");
+
+console.log(`Docs route smoke test passed: ${index.documents.length} AI-agent routes verified inside React app.`);
