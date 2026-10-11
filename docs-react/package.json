@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "vite",
     "generate:aiagent": "node scripts/generate-aiagent-docs.mjs",
-    "build": "npm run generate:aiagent && tsc -b && vite build",
+    "prerender": "node scripts/prerender-routes.mjs",
+    "build": "npm run generate:aiagent && tsc -b && vite build && npm run prerender",
     "test:routes": "npm run build && node test/aiagent-routes.test.mjs",
     "lint": "oxlint",
     "preview": "vite preview"
